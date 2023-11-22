@@ -42,6 +42,9 @@ class Purchase
     #[ORM\JoinColumn(nullable: false)]
     private ?Address $addresses = null;
 
+    #[ORM\Column(length: 36)]
+    private ?string $reference = null;
+
     public function __construct()
     {
         $this->picks = new ArrayCollection();
@@ -150,6 +153,18 @@ class Purchase
     public function setAddresses(?Address $addresses): static
     {
         $this->addresses = $addresses;
+
+        return $this;
+    }
+
+    public function getReference(): ?string
+    {
+        return $this->reference;
+    }
+
+    public function setReference(string $reference): static
+    {
+        $this->reference = $reference;
 
         return $this;
     }
