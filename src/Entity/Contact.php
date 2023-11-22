@@ -30,6 +30,15 @@ class Contact
     #[ORM\JoinColumn(nullable: false)]
     private ?ContactType $contactType = null;
 
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $email = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $firstName = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $lastName = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -79,6 +88,42 @@ class Contact
     public function setContactType(?ContactType $contactType): static
     {
         $this->contactType = $contactType;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(?string $firstName): static
+    {
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(?string $lastName): static
+    {
+        $this->lastName = $lastName;
 
         return $this;
     }
