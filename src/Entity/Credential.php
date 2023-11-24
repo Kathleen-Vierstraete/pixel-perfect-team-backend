@@ -49,6 +49,18 @@ class Credential implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $isBlocked = null;
 
+    public function __construct(string $email,string $resetToken)
+    {
+        $this->email = $email;
+        $this->isVerified = false;
+        $this->isActivated = false;
+        $this->isBlocked = false;
+        $this->isArchived= false;
+        $this->token = "";
+        $this->resetToken = $resetToken;
+
+    }
+
     public function getId(): ?int
     {
         return $this->id;

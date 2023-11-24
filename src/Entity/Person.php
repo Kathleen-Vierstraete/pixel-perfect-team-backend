@@ -9,7 +9,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PersonRepository::class)]
-#[ApiResource]
 class Person
 {
     #[ORM\Id]
@@ -44,8 +43,11 @@ class Person
     #[ORM\ManyToMany(targetEntity: Address::class, inversedBy: 'persons')]
     private Collection $addresses;
 
-    public function __construct()
+    public function __construct(string $firstName,string $lastName, string $phoneNumber)
     {
+        $this->firstName = $firstName;
+        $this->lastName = $lastName;
+        $this->phoneNumber = $phoneNumber;
         $this->purchases = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->contacts = new ArrayCollection();
