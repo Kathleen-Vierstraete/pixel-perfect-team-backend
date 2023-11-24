@@ -16,11 +16,11 @@ class Category
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["product:read"])]
+    #[Groups(['product:read','product:find_one'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["product:read"])]
+    #[Groups(['product:read','product:find_one'])]
     private ?string $label = null;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Product::class)]

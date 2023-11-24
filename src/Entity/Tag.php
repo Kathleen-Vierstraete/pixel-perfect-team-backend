@@ -16,11 +16,11 @@ class Tag
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["product:read"])]
+    #[Groups(['product:read','product:find_one'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(["product:read"])]
+    #[Groups(['product:read','product:find_one'])]
     private ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'tags')]

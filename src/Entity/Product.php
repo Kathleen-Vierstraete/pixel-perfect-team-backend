@@ -25,77 +25,77 @@ class Product
     private ?string $name = null;
 
     #[ORM\Column(length: 10)]
-    #[Groups("product:read")]
+    #[Groups(['product:read','product:find_one'])]
     private ?string $reference = null;
 
     #[ORM\Column]
-    #[Groups("product:read")]
+    #[Groups(['product:read','product:find_one'])]
     private ?int $price = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups("product:read")]
+    #[Groups(['product:read','product:find_one'])]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Groups("product:read")]
+    #[Groups(['product:read','product:find_one'])]
     private ?int $stock = null;
 
     #[ORM\Column]
-    #[Groups("product:read")]
+    #[Groups(['product:read','product:find_one'])]
     private ?int $length = null;
 
     #[ORM\Column]
-    #[Groups("product:read")]
+    #[Groups(['product:read','product:find_one'])]
     private ?int $height = null;
 
     #[ORM\Column]
-    #[Groups("product:read")]
+    #[Groups(['product:read','product:find_one'])]
     private ?int $width = null;
 
     #[ORM\Column]
-    #[Groups("product:read")]
+    #[Groups(['product:read','product:find_one'])]
     private ?int $weight = null;
 
     #[ORM\Column]
-    #[Groups("product:read")]
+    #[Groups(['product:read','product:find_one'])]
     private ?int $creationDate = null;
 
     #[ORM\Column]
-    #[Groups("product:read")]
+    #[Groups(['product:read','product:find_one'])]
     private ?bool $isArchived = null;
 
     #[ORM\Column]
-    #[Groups("product:read")]
+    #[Groups(['product:read','product:find_one'])]
     private ?bool $isCollector = null;
 
     #[ORM\ManyToMany(targetEntity: Creator::class, inversedBy: 'products')]
-    #[Groups('product:read')]
+    #[Groups(['product:read','product:find_one'])]
     private Collection $creators;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'products')]
-    #[Groups('product:read')]
+    #[Groups(['product:read','product:find_one'])]
     private Collection $tags;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups('product:read')]
+    #[Groups(['product:read','product:find_one'])]
     private ?Category $category = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups('product:read')]
+    #[Groups(['product:read','product:find_one'])]
     private ?Editor $editor = null;
 
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Picture::class)]
-    #[Groups('product:read')]
+    #[Groups(['product:read','product:find_one'])]
     private Collection $pictures;
 
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Comment::class)]
-    #[Groups('product:read')]
+    #[Groups(['product:read','product:find_one'])]
     private Collection $comments;
 
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Pick::class)]
-    #[Groups('product:read')]
+    #[Groups(['product:read','product:find_one'])]
     private Collection $picks;
 
     public function __construct()
