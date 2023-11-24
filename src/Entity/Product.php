@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 
@@ -16,65 +17,85 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('product:read')]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups("product:read")]
     private ?string $name = null;
 
     #[ORM\Column(length: 10)]
+    #[Groups("product:read")]
     private ?string $reference = null;
 
     #[ORM\Column]
+    #[Groups("product:read")]
     private ?int $price = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups("product:read")]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Groups("product:read")]
     private ?int $stock = null;
 
     #[ORM\Column]
+    #[Groups("product:read")]
     private ?int $length = null;
 
     #[ORM\Column]
+    #[Groups("product:read")]
     private ?int $height = null;
 
     #[ORM\Column]
+    #[Groups("product:read")]
     private ?int $width = null;
 
     #[ORM\Column]
+    #[Groups("product:read")]
     private ?int $weight = null;
 
     #[ORM\Column]
+    #[Groups("product:read")]
     private ?int $creationDate = null;
 
     #[ORM\Column]
+    #[Groups("product:read")]
     private ?bool $isArchived = null;
 
     #[ORM\Column]
+    #[Groups("product:read")]
     private ?bool $isCollector = null;
 
     #[ORM\ManyToMany(targetEntity: Creator::class, inversedBy: 'products')]
+    #[Groups('product:read')]
     private Collection $creators;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'products')]
+    #[Groups('product:read')]
     private Collection $tags;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('product:read')]
     private ?Category $category = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('product:read')]
     private ?Editor $editor = null;
 
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Picture::class)]
+    #[Groups('product:read')]
     private Collection $pictures;
 
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Comment::class)]
+    #[Groups('product:read')]
     private Collection $comments;
 
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Pick::class)]
+    #[Groups('product:read')]
     private Collection $picks;
 
     public function __construct()

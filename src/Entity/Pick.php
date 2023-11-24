@@ -5,6 +5,7 @@ namespace App\Entity;
 
 use App\Repository\PickRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PickRepository::class)]
 
@@ -13,12 +14,15 @@ class Pick
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["product:read"])]
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups(["product:read"])]
     private ?int $quantity = null;
 
     #[ORM\Column]
+    #[Groups(["product:read"])]
     private ?int $priceitem = null;
 
     #[ORM\ManyToOne(inversedBy: 'picks')]

@@ -6,6 +6,7 @@ namespace App\Entity;
 use App\Repository\PictureRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PictureRepository::class)]
 
@@ -14,15 +15,19 @@ class Picture
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["product:read"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(["product:read"])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["product:read"])]
     private ?string $url = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(["product:read"])]
     private ?string $alt = null;
 
     #[ORM\ManyToOne(inversedBy: 'pictures')]

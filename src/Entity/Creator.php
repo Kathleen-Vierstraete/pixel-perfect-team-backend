@@ -7,6 +7,7 @@ use App\Repository\CreatorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CreatorRepository::class)]
 
@@ -15,9 +16,11 @@ class Creator
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["product:read"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(["product:read"])]
     private ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'Creator')]
