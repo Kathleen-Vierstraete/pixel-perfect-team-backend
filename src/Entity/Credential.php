@@ -6,6 +6,7 @@ use App\Repository\CredentialRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CredentialRepository::class)]
 class Credential implements UserInterface, PasswordAuthenticatedUserInterface
@@ -16,6 +17,7 @@ class Credential implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups("person:crud")]
     private ?string $email = null;
 
     #[ORM\Column]

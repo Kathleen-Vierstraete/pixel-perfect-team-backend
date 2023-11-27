@@ -7,6 +7,7 @@ use App\Repository\PersonRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PersonRepository::class)]
 class Person
@@ -14,17 +15,19 @@ class Person
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups("person:crud")]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups("person:crud")]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups("person:crud")]
     private ?string $firstName = null;
 
-    
-
     #[ORM\Column(length: 10)]
+    #[Groups("person:crud")]
     private ?string $phoneNumber = null;
 
     #[ORM\OneToMany(mappedBy: 'person', targetEntity: Purchase::class)]
@@ -35,12 +38,14 @@ class Person
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups("person:crud")]
     private ?Credential $credential = null;
 
     #[ORM\OneToMany(mappedBy: 'person', targetEntity: Contact::class)]
     private Collection $contacts;
 
     #[ORM\ManyToMany(targetEntity: Address::class, inversedBy: 'persons')]
+    #[Groups("person:crud")]
     private Collection $addresses;
 
     public function __construct(string $firstName,string $lastName, string $phoneNumber)
