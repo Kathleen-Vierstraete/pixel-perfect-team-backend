@@ -14,15 +14,15 @@ class Pick
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?int $id = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?int $quantity = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?int $priceitem = null;
 
     #[ORM\ManyToOne(inversedBy: 'picks')]

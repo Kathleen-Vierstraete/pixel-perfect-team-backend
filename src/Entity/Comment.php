@@ -14,27 +14,27 @@ class Comment
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?string $body = null;
 
     #[ORM\Column(length: 20)]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?string $title = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?int $rate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?int $vote = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]

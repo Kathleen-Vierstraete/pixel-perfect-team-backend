@@ -17,85 +17,85 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 10)]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?string $reference = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?int $price = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?int $stock = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?int $length = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?int $height = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?int $width = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?int $weight = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?int $creationDate = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?bool $isArchived = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?bool $isCollector = null;
 
-    #[ORM\ManyToMany(targetEntity: Creator::class, inversedBy: 'products')]
-    #[Groups(['product:read','product:find_one'])]
+    #[ORM\ManyToMany(targetEntity: Creator::class, inversedBy: 'products', cascade: ["persist"])]
+    #[Groups(['product:read','product:create'])]
     private Collection $creators;
 
-    #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'products')]
-    #[Groups(['product:read','product:find_one'])]
+    #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'products', cascade: ["persist"])]
+    #[Groups(['product:read','product:create'])]
     private Collection $tags;
 
-    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\ManyToOne(inversedBy: 'products', cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?Category $category = null;
 
-    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\ManyToOne(inversedBy: 'products', cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['product:read','product:find_one'])]
+    #[Groups(['product:read','product:create'])]
     private ?Editor $editor = null;
-
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Picture::class)]
-    #[Groups(['product:read','product:find_one'])]
+    
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Picture::class, cascade: ["persist"])]
+    #[Groups(['product:read','product:create'])]
     private Collection $pictures;
 
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Comment::class)]
-    #[Groups(['product:read','product:find_one'])]
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Comment::class, cascade: ["persist"])]
+    #[Groups(['product:read','product:create'])]
     private Collection $comments;
 
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Pick::class)]
-    #[Groups(['product:read','product:find_one'])]
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: Pick::class, cascade: ["persist"])]
+    #[Groups(['product:read','product:create'])]
     private Collection $picks;
 
     public function __construct()
