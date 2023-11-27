@@ -32,9 +32,18 @@ class PickRepository extends ServiceEntityRepository
             ->setParameter('userId',  $personId)
             ->getQuery()
             ->getResult();
-    }
-    
+    } 
 
+    public function pickIsExist(int $userId)
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.purchase','pur')
+            ->join('pur.person','per')
+            ->where('per.id = :userId')
+            ->setParameter('userId',$userId)
+            ->getQuery()
+            ->getResult();
+    }
 
 
 //    /**

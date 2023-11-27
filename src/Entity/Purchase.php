@@ -23,10 +23,10 @@ class Purchase
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateDelivery = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateExpectedDelivery = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $datePurchase = null;
 
     #[ORM\OneToMany(mappedBy: 'purchase', targetEntity: Pick::class)]
@@ -43,11 +43,12 @@ class Purchase
     private ?Status $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'purchases')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Address $addresses = null;
 
-    public function __construct()
+    public function __construct(Person $person = null)
     {
+        $this->person = $person;
         $this->picks = new ArrayCollection();
     }
 
