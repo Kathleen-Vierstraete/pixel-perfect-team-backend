@@ -9,7 +9,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PersonRepository::class)]
-#[ApiResource]
 class Person
 {
     #[ORM\Id]
@@ -22,8 +21,6 @@ class Person
 
     #[ORM\Column(length: 50)]
     private ?string $firstName = null;
-
-    
 
     #[ORM\Column(length: 10)]
     private ?string $phoneNumber = null;

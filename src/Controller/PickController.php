@@ -2,18 +2,20 @@
 
 namespace App\Controller;
 
+use App\Repository\PickRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/api/pick', name: 'panier')]
 class PickController extends AbstractController
 {
-    #[Route('/pick', name: 'app_pick')]
-    public function index(): JsonResponse
+    #[Route('/{id<\d+>}', name: 'GetPick', methods: ['GET'])]
+    public function getById(PickRepository $pickRepository, int $id): JsonResponse
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/PickController.php',
-        ]);
+        
+    $pick = $pickRepository->findByIdPerson($id);
+
+    return $this->json($pick, 200, [], ['groups' => 'pick:crud']);
     }
 }

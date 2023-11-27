@@ -5,28 +5,33 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\PickRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PickRepository::class)]
-#[ApiResource]
 class Pick
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups("pick:crud")]
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups("pick:crud")]
     private ?int $quantity = null;
 
     #[ORM\Column]
+    #[Groups("pick:crud")]
     private ?int $priceitem = null;
 
     #[ORM\ManyToOne(inversedBy: 'picks')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups("pick:crud")]
     private ?Product $product = null;
 
     #[ORM\ManyToOne(inversedBy: 'picks')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups("pick:crud")]
     private ?Purchase $purchase = null;
 
     public function getId(): ?int
