@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
 use App\Entity\Creator;
+use App\Entity\Editor;
 use App\Entity\Product;
+use App\Entity\Tag;
 use App\Repository\ProductRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,7 +23,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class ProductController extends AbstractController
 {
     /** Getting all products
-     *  */ 
+     *  */
     #[Route('/', name: 'index', methods: ['get'])]
     public function index(ProductRepository $productRepository): JsonResponse
     {
@@ -29,7 +33,7 @@ class ProductController extends AbstractController
     }
 
     /** Getting a product by its ID
-     *  */ 
+     *  */
     #[Route('/{id<\d+>}', name: 'by_id', methods: ['get'])]
     public function getById(Product $product = null): Response
     {
@@ -45,43 +49,122 @@ class ProductController extends AbstractController
         return $this->json($product, 200, [], ['groups' => 'product:read']);
     }
 
-    #[Route('/add', name: 'creation', methods: ['POST'])]
-    public function create(Request $request, SerializerInterface $serializerInterface, ValidatorInterface $validatorInterface, ManagerRegistry $managerRegistry): JsonResponse
+    #[Route('/add', name: 'create', methods: ['POST'])]
+    public function create(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
-        $creator = new Creator;
-        
-        
-        // Getting the JSON content
-        $json = $request->getContent();
 
-        // Managing error
-        try {
-            // Deserializing the JSON content in the class Product
-            $product = $serializerInterface->deserialize($json, Product::class, 'json');
+        // Creating a Product Entity
+        $product = new Product();
 
-        } catch (NotEncodableValueException $error) {
-            return $this->json(
-                ["error" => "JSON invalide"],
-                Response::HTTP_UNPROCESSABLE_ENTITY
-            );
+        // Getting the content
+        $productData = json_decode($request->getContent(), true);
+
+        // Setting properties
+        $properties = ['name', 'reference', 'price', 'description', 'stock', 'length', 'height', 'width', 'weight', 'creationDate', 'isArchived', 'isCollector'];
+
+        foreach ($properties as $property) {
+            if (isset($productData[$property])) {
+                $setterMethod = 'set' . ucfirst($property);
+                $product->$setterMethod($productData[$property]);
+            }
         }
 
-        // Validating the product entity
-        $errors = $validatorInterface->validate($product);
-
-        if (count($errors) > 0) {
-            return $this->json(
-                $errors,
-                Response::HTTP_UNPROCESSABLE_ENTITY
-            );
+        // Add creators
+        $creatorIds = $productData['creator_ids'];
+        foreach ($creatorIds as $creatorId) {
+            $creator = $entityManager->getRepository(Creator::class)->find($creatorId);
+            $product->addCreator($creator);
         }
+
+        // Add tags
+        $tagsIds = $productData['tag_ids'];
+        foreach ($tagsIds as $tagId) {
+            $tag = $entityManager->getRepository(Tag::class)->find($tagId);
+            $product->addTag($tag);
+        }
+
+        // Set category
+        $categoryId = $productData['category_id'];
+        $category = $entityManager->getRepository(Category::class)->find($categoryId);
+        $product->setCategory($category);
+
+        // Set editor
+        $editorId = $productData['editor_id'];
+        $editor = $entityManager->getRepository(Editor::class)->find($editorId);
+        $product->setEditor($editor);
+
 
         // Saving the product entity
-        $entityManager = $managerRegistry->getManager();
         $entityManager->persist($product);
         $entityManager->flush();
 
         // Return the response
         return $this->json($product, Response::HTTP_CREATED, [], ["groups" => "product:create"]);
+    }
+
+    #[Route('/update/{id<\d+>}', name: 'update', methods: ['PATCH'])]
+    public function update(int $id, Request $request, EntityManagerInterface $entityManager, ProductRepository $productRepository, ManagerRegistry $managerRegistry): JsonResponse
+    {
+        // Getting the product to update
+        $product = $productRepository->find($id);
+        $productData = json_decode($request->getContent(), true);
+
+        // Create method copy
+        // -----------------
+
+        // Setting properties
+        // $properties = ['name', 'reference', 'price', 'description', 'stock', 'length', 'height', 'width', 'weight', 'creationDate', 'isArchived', 'isCollector'];
+
+        // foreach ($properties as $property) {
+        //     if (isset($productData[$property])) {
+        //         $setterMethod = 'set' . ucfirst($property);
+        //         $product->$setterMethod($product[$property]);
+        //     }
+        // }
+
+        $product->setName($productData['name']);
+        $product->setReference($productData['reference']);
+        $product->setPrice($productData['price']);
+        $product->setDescription($productData['description']);
+        $product->setStock($productData['stock']);
+        $product->setLength($productData['length']);
+        $product->setHeight($productData['height']);
+        $product->setWidth($productData['width']);
+        $product->setWeight($productData['weight']);
+        $product->setCreationDate($productData['creationDate']);
+        $product->setIsArchived($productData['isArchived']);
+        $product->setIsCollector($productData['isCollector']);
+
+        // Add creators
+        $creatorIds = $product->getCreators();
+        foreach ($creatorIds as $creatorId) {
+            $creator = $entityManager->getRepository(Creator::class)->find($creatorId);
+            $product->addCreator($creator);
+        }
+
+        // Add tags
+        $tagsIds = $product->getTags();
+        foreach ($tagsIds as $tagId) {
+            $tag = $entityManager->getRepository(Tag::class)->find($tagId);
+            $product->addTag($tag);
+        }
+
+        // Set category
+        $categoryId = $product->getCategory();
+        $category = $entityManager->getRepository(Category::class)->find($categoryId);
+        $product->setCategory($category);
+
+        // Set editor
+        $editorId = $product->getEditor();
+        $editor = $entityManager->getRepository(Editor::class)->find($editorId);
+        $product->setEditor($editor);
+
+        // Saving the entity
+        $entityManager = $managerRegistry->getManager();
+        $entityManager->persist($product);
+        $entityManager->flush();
+
+        // returning the answer
+        return $this->json($product, 204, [], ['groups' => 'product:update']);
     }
 }
