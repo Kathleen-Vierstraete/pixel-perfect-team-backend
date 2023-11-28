@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Credential;
 use App\Entity\Person;
+use App\Repository\CredentialRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -40,6 +41,16 @@ class CredentialController extends AbstractController
         $entityManager->persist($person);
         $entityManager->flush();
 
-        return $this->json(['message'=>'person added'], 201);
+        return $this->json(['message' => 'person added'], 201);
+    }
+
+    #[Route('/verify/{resetToken}', name: '_verify')]
+    public function verify(string $resetToken, CredentialRepository $credentialRepository): JsonResponse
+    {
+        $userIsExist = $credentialRepository->findOneBy(['resetToken' => $resetToken]);
+
+        $credentialRepository->add($userIsExist->setIsVerified(true),true);
+
+        return $this->json(['message' => 'user is verified']);
     }
 }
