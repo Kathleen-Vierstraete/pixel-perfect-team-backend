@@ -34,12 +34,12 @@ class Pick
     #[Groups("pick:crud")]
     private ?Purchase $purchase = null;
 
-    public function __construct(Product $product, int $quantity,Purchase $purchase)
+    public function __construct(Purchase $purchase, int $quantity, Product $product)
     {
+        $this->purchase = $purchase;
         $this->product = $product;
         $this->priceitem = $product->getPrice();
-        $this->quantity = $quantity;
-        $this->purchase = $purchase;
+        $this->quantity = $quantity; 
     }
 
     public function getId(): ?int

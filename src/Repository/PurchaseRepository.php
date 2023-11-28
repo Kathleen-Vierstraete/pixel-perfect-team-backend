@@ -26,7 +26,7 @@ class PurchaseRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('pur')
             ->join('pur.person', 'per')
             ->where('per.id = :userId')
-            ->andWhere('pur.datePurchase = 0')
+            ->andWhere('pur.datePurchase IS NULL')
             ->setParameter('userId', $userId)
             ->setMaxResults(1)
             ->getQuery()
