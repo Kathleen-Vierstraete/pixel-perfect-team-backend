@@ -9,30 +9,46 @@ use App\Entity\Product;
 use App\Entity\Tag;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Exception\NotEncodableValueException;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/api/products', name: 'api_products_')]
 class ProductController extends AbstractController
 {
-    /** Getting all products
-     *  */
-    #[Route('/', name: 'index', methods: ['get'])]
-    public function index(ProductRepository $productRepository): JsonResponse
+    /**
+     * Getting all products
+     *
+     * @param $productRepository, the repository to make request from the table Products
+     */
+    #[Route('/backoffice', name: 'index_backoffice', methods: ['get'])]
+    public function indexBackoffice(ProductRepository $productRepository): JsonResponse
     {
         $products = $productRepository->findAll();
 
         return $this->json($products, 200, [], ['groups' => 'product:read']);
     }
 
-    /** Getting a product by its ID
+    /**
+     * Getting all non-archived products
+     *
+     * @param $productRepository, the repository to make request from the table Products
+     */
+    #[Route('/', name: 'index', methods: ['get'])]
+    public function index(ProductRepository $productRepository): JsonResponse
+    {
+        $products = $productRepository->findBy(['stock' => 0]);
+        // 'isArchived' => 0 || 
+
+        return $this->json($products, 200, [], ['groups' => 'product:read']);
+    }
+
+    /** 
+     * Getting a product by its ID
+     * 
+     * @param $product, a Product entity
      *  */
     #[Route('/{id<\d+>}', name: 'by_id', methods: ['get'])]
     public function getById(Product $product = null): Response
@@ -48,6 +64,13 @@ class ProductController extends AbstractController
 
         return $this->json($product, 200, [], ['groups' => 'product:read']);
     }
+
+    /** 
+     * Creating a new product
+     * 
+     * @param $request, a Request entity to call the database
+     * @param $entityManager, the manager to persist the data
+     *  */
 
     #[Route('/add', name: 'create', methods: ['POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager): JsonResponse
@@ -102,8 +125,18 @@ class ProductController extends AbstractController
         return $this->json($product, Response::HTTP_CREATED, [], ["groups" => "product:create"]);
     }
 
+
+    /** 
+     * Getting a product by its ID
+     * 
+     * @param $id, the product id to update
+     * @param $request, a Request entity to call the database
+     * @param $entityManager, the manager to persist the data
+     * @param $productRepository, the repository to make request from the table Products
+     *  */
+
     #[Route('/update/{id<\d+>}', name: 'update', methods: ['PATCH'])]
-    public function update(int $id, Request $request, EntityManagerInterface $entityManager, ProductRepository $productRepository, ManagerRegistry $managerRegistry): JsonResponse
+    public function update(int $id, Request $request, EntityManagerInterface $entityManager, ProductRepository $productRepository): JsonResponse
     {
         // Getting the product to update
         $product = $productRepository->find($id);
@@ -160,7 +193,6 @@ class ProductController extends AbstractController
         $product->setEditor($editor);
 
         // Saving the entity
-        $entityManager = $managerRegistry->getManager();
         $entityManager->persist($product);
         $entityManager->flush();
 
