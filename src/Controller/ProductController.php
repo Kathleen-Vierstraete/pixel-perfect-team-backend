@@ -44,6 +44,14 @@ class ProductController extends AbstractController
         return $this->json($products, 200, [], ['groups' => 'product:read']);
     }
 
+    #[Route('/similar/{id<\d+>}', name:'similar', methods: ['get'])]
+    public function similarProducts(Product $product,ProductRepository $productRepository): JsonResponse
+    {
+        $products = $productRepository->findByTags($product->getTags());
+
+        return $this->json($products, 200, [], ['groups' => 'product:read']);
+    }
+
     /** 
      * Getting a product by its ID
      * 
