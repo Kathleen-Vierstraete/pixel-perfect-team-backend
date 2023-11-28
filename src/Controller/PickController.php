@@ -70,4 +70,18 @@ class PickController extends AbstractController
 
         return $this->json($picks, context: ['groups' => "pick:crud"]);
     }
+
+    #[Route('/{userId<\d+>}', name: '_delete', methods: ['DELETE'])]
+    public function delete(int $userId, EntityManagerInterface $entityManager,PickRepository $pickRepository,): JsonResponse
+    {
+        $picks = $pickRepository->findByIdPerson($userId);
+
+        foreach ($picks as $pick) {
+            $entityManager->remove($pick);
+        }
+
+        $entityManager->flush();
+
+        return $this->json("{}",204);
+    }
 }
