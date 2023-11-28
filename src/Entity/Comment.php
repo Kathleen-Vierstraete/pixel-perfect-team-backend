@@ -2,33 +2,39 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
+
 use App\Repository\CommentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
-#[ApiResource]
 class Comment
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['product:read','product:create'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['product:read','product:create'])]
     private ?string $body = null;
 
     #[ORM\Column(length: 20)]
+    #[Groups(['product:read','product:create'])]
     private ?string $title = null;
 
     #[ORM\Column]
+    #[Groups(['product:read','product:create'])]
     private ?int $rate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['product:read','product:create'])]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['product:read','product:create'])]
     private ?int $vote = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]

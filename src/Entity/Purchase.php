@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
+
 use App\Repository\PurchaseRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,7 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PurchaseRepository::class)]
-#[ApiResource]
+
 class Purchase
 {
     #[ORM\Id]
@@ -41,6 +41,9 @@ class Purchase
     #[ORM\ManyToOne(inversedBy: 'purchases')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Address $addresses = null;
+
+    #[ORM\Column(length: 36)]
+    private ?string $reference = null;
 
     public function __construct()
     {
@@ -150,6 +153,18 @@ class Purchase
     public function setAddresses(?Address $addresses): static
     {
         $this->addresses = $addresses;
+
+        return $this;
+    }
+
+    public function getReference(): ?string
+    {
+        return $this->reference;
+    }
+
+    public function setReference(string $reference): static
+    {
+        $this->reference = $reference;
 
         return $this;
     }

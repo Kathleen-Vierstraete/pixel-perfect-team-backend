@@ -2,27 +2,32 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
+
 use App\Repository\PictureRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PictureRepository::class)]
-#[ApiResource]
+
 class Picture
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['product:read','product:create'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['product:read','product:create'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['product:read','product:create'])]
     private ?string $url = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['product:read','product:create'])]
     private ?string $alt = null;
 
     #[ORM\ManyToOne(inversedBy: 'pictures')]

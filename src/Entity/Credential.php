@@ -39,7 +39,7 @@ class Credential implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $isVerified = null;
 
-    #[ORM\Column(length: 32)]
+    #[ORM\Column(length: 36)]
     private ?string $resetToken = null;
 
     #[ORM\Column]

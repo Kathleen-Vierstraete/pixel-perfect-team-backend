@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+
 #[ORM\Entity(repositoryClass: AddressRepository::class)]
 
 class Address
@@ -15,23 +16,23 @@ class Address
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups("person:crud")]
+    #[Groups(["person:crud",'address:read'])]
     private ?int $id = null;
-
+    
     #[ORM\Column]
-    #[Groups("person:crud")]
+    #[Groups(["person:crud",'address:read'])]
     private ?int $streetNumber = null;
-
+    
     #[ORM\Column(length: 50)]
-    #[Groups("person:crud")]
+    #[Groups(["person:crud",'address:read'])]
     private ?string $streetName = null;
-
+    
     #[ORM\Column(length: 50)]
-    #[Groups("person:crud")]
+    #[Groups(["person:crud",'address:read'])]
     private ?string $city = null;
-
+    
     #[ORM\Column]
-    #[Groups("person:crud")]
+    #[Groups(["person:crud",'address:read'])]
     private ?int $zipcode = null;
 
     #[ORM\ManyToMany(targetEntity: Person::class, mappedBy: 'addresses')]
@@ -146,11 +147,9 @@ class Address
 
     public function removePurchase(Purchase $purchase): static
     {
-        if ($this->purchases->removeElement($purchase)) {
+        if ($this->purchases->removeElement($purchase)&&($purchase->getAddresses() === $this)) {
             // set the owning side to null (unless already changed)
-            if ($purchase->getAddresses() === $this) {
                 $purchase->setAddresses(null);
-            }
         }
 
         return $this;
