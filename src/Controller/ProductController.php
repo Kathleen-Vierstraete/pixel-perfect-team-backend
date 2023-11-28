@@ -39,8 +39,7 @@ class ProductController extends AbstractController
     #[Route('/', name: 'index', methods: ['get'])]
     public function index(ProductRepository $productRepository): JsonResponse
     {
-        $products = $productRepository->findBy(['stock' => 0]);
-        // 'isArchived' => 0 || 
+        $products = $productRepository->findBy(['isArchived' => 0]);
 
         return $this->json($products, 200, [], ['groups' => 'product:read']);
     }
@@ -141,19 +140,6 @@ class ProductController extends AbstractController
         // Getting the product to update
         $product = $productRepository->find($id);
         $productData = json_decode($request->getContent(), true);
-
-        // Create method copy
-        // -----------------
-
-        // Setting properties
-        // $properties = ['name', 'reference', 'price', 'description', 'stock', 'length', 'height', 'width', 'weight', 'creationDate', 'isArchived', 'isCollector'];
-
-        // foreach ($properties as $property) {
-        //     if (isset($productData[$property])) {
-        //         $setterMethod = 'set' . ucfirst($property);
-        //         $product->$setterMethod($product[$property]);
-        //     }
-        // }
 
         $product->setName($productData['name']);
         $product->setReference($productData['reference']);
