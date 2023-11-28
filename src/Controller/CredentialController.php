@@ -40,6 +40,6 @@ class CredentialController extends AbstractController
         $entityManager->persist($person);
         $entityManager->flush();
 
-        return new JsonResponse($request, 201, [], true);
+        return $this->json(['message'=>'person added'], 201);
     }
 }
