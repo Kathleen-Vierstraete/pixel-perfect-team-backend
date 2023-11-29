@@ -25,18 +25,21 @@ class ProductRepository extends ServiceEntityRepository
     /**
      * @return Product[] Returns an array of Product objects
      */
-    public function findByTags(Collection $value): array
+    public function findByTags(Collection $value, int $id): array
     {
         return $this->createQueryBuilder('p')
-            ->addSelect('t')
+            ->distinct()
             ->join('p.tags', 't')
             ->where('t.id in (:val)')
-            ->setParameter('val', $value)
+            ->andWhere('p.id <> :id')
+            ->setParameters([
+                'val' => $value,
+                'id' => $id 
+            ])
             ->setMaxResults(10)
             ->getQuery()
             ->getResult();
     }
-
 
     //    /**
     //     * @return Product[] Returns an array of Product objects
