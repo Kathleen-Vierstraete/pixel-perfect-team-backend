@@ -11,17 +11,16 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-
 class Product
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:read','product:create','product:update',"pick:crud"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:read','product:create','product:update',"pick:crud"])]
     private ?string $name = null;
 
     #[ORM\Column(length: 10)]
@@ -29,7 +28,7 @@ class Product
     private ?string $reference = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:read','product:create','product:update',"pick:crud"])]
     private ?int $price = null;
 
     #[ORM\Column(type: Types::TEXT)]

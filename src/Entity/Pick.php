@@ -8,30 +8,39 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PickRepository::class)]
-
 class Pick
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['product:read','product:create'])]
+    #[Groups(['product:read','product:create',"pick:crud"])]
     private ?int $id = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:create'])]
+    #[Groups(['product:read','product:create',"pick:crud"])]
     private ?int $quantity = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:create'])]
+    #[Groups(['product:read','product:create',"pick:crud"])]
     private ?int $priceitem = null;
 
     #[ORM\ManyToOne(inversedBy: 'picks')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["pick:crud"])]
     private ?Product $product = null;
 
     #[ORM\ManyToOne(inversedBy: 'picks')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["pick:crud"])]
     private ?Purchase $purchase = null;
+
+    public function __construct(Purchase $purchase, int $quantity, Product $product)
+    {
+        $this->purchase = $purchase;
+        $this->product = $product;
+        $this->priceitem = $product->getPrice();
+        $this->quantity = $quantity; 
+    }
 
     public function getId(): ?int
     {

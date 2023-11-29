@@ -21,6 +21,31 @@ class PickRepository extends ServiceEntityRepository
         parent::__construct($registry, Pick::class);
     }
 
+    public function findByIdPerson(int $personId)
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p','pr', 'pu')
+            ->join('p.purchase', 'pu')
+            ->join('p.product', 'pr')
+            ->join('pu.person', 'per')
+            ->where('per.id = :userId')
+            ->setParameter('userId',  $personId)
+            ->getQuery()
+            ->getResult();
+    } 
+
+    public function pickIsExist(int $userId)
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.purchase','pur')
+            ->join('pur.person','per')
+            ->where('per.id = :userId')
+            ->setParameter('userId',$userId)
+            ->getQuery()
+            ->getResult();
+    }
+
+
 //    /**
 //     * @return Pick[] Returns an array of Pick objects
 //     */
