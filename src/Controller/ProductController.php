@@ -43,28 +43,14 @@ class ProductController extends AbstractController
 
         return $this->json($products, 200, [], ['groups' => 'product:read']);
     }
-
-    /**
-     * Getting similar products
+    /** 
+     * Getting a product by its ID & the similar products by the tag's ID
      * 
      * @param $product, a Product entity
      * @param $productRepository, the repository to make request from the table Products
-     */
-    #[Route('/similar/{id<\d+>}', name:'similar', methods: ['get'])]
-    public function similarProducts(Product $product,ProductRepository $productRepository): JsonResponse
-    {
-        $products = $productRepository->findByTags($product->getTags(), $product->getId());
-
-        return $this->json($products, 200, [], ['groups' => 'product:read']);
-    }
-
-    /** 
-     * Getting a product by its ID
-     * 
-     * @param $product, a Product entity
      *  */
     #[Route('/{id<\d+>}', name: 'by_id', methods: ['get'])]
-    public function getById(Product $product = null): Response
+    public function getById(Product $product = null, ProductRepository $productRepository): JsonResponse
     {
         if (!$product) {
             return $this->json(
@@ -75,7 +61,9 @@ class ProductController extends AbstractController
             );
         }
 
-        return $this->json($product, 200, [], ['groups' => 'product:read']);
+        $products = $productRepository->findByTags($product->getTags(), $product->getId());
+
+        return $this->json(['product' => $product, 'similarProduct' => $products], 200, [], ['groups' => 'product:read']);
     }
 
     /** 
