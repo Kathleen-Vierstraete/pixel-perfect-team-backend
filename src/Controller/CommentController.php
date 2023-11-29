@@ -71,7 +71,7 @@ class CommentController extends AbstractController
         $entityManager->flush();
 
         // Returning the entity comment in JSON & connecting it through groups (204 = HTTP_CREATED)
-        return $this->json($comment, 204, [], ['groups' => 'comment:crud']);
+        return $this->json($comment, 201, [], ['groups' => 'comment:crud']);
     }
 
     #[Route('/update/{id<\d+>}', name: 'update', methods: ['PATCH'])]
@@ -109,7 +109,7 @@ class CommentController extends AbstractController
         $entityManager->flush();
 
         // Returning the entity comment in JSON & connecting it through groups (204 = HTTP_CREATED)
-        return $this->json($comment, 204, [], ['groups' => 'comment:crud']);
+        return $this->json($comment, 200, [], ['groups' => 'comment:crud']);
     }
 
     #[Route('/delete/{id<\d+>}', name: 'delete', methods: ['DELETE'])]
