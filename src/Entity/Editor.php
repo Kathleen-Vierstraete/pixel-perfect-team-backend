@@ -16,11 +16,11 @@ class Editor
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['product:read','product:create'])]
+    #[Groups(['product:crud'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['product:read','product:create'])]
+    #[Groups(['product:crud'])]
     private ?string $name = null;
 
     #[ORM\OneToMany(mappedBy: 'editor', targetEntity: Product::class)]

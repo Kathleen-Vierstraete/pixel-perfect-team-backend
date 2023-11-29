@@ -17,85 +17,85 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:crud'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:crud'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 10)]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:crud'])]
     private ?string $reference = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:crud'])]
     private ?int $price = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:crud'])]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:crud'])]
     private ?int $stock = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:crud'])]
     private ?int $length = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:crud'])]
     private ?int $height = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:crud'])]
     private ?int $width = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:crud'])]
     private ?int $weight = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:crud'])]
     private ?int $creationDate = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:crud'])]
     private ?bool $isArchived = null;
 
     #[ORM\Column]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:crud'])]
     private ?bool $isCollector = null;
 
     #[ORM\ManyToMany(targetEntity: Creator::class, inversedBy: 'products',cascade: ["persist"])]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:crud'])]
     private Collection $creators;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'products',cascade: ["persist"])]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:crud'])]
     private Collection $tags;
 
     #[ORM\ManyToOne(inversedBy: 'products',cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:crud'])]
     private ?Category $category = null;
 
     #[ORM\ManyToOne(inversedBy: 'products',cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:crud'])]
     private ?Editor $editor = null;
     
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Picture::class,cascade: ["persist"])]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:crud'])]
     private Collection $pictures;
 
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Comment::class,cascade: ["persist"])]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:crud'])]
     private Collection $comments;
 
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Pick::class,cascade: ["persist"])]
-    #[Groups(['product:read','product:create','product:update'])]
+    #[Groups(['product:crud'])]
     private Collection $picks;
 
     public function __construct()

@@ -28,7 +28,7 @@ class ProductController extends AbstractController
     {
         $products = $productRepository->findAll();
 
-        return $this->json($products, 200, [], ['groups' => 'product:read']);
+        return $this->json($products, 200, [], ['groups' => 'product:crud']);
     }
 
     /**
@@ -41,7 +41,7 @@ class ProductController extends AbstractController
     {
         $products = $productRepository->findBy(['isArchived' => 0]);
 
-        return $this->json($products, 200, [], ['groups' => 'product:read']);
+        return $this->json($products, 200, [], ['groups' => 'product:crud']);
     }
     /** 
      * Getting a product by its ID & the similar products by the tag's ID
@@ -63,7 +63,7 @@ class ProductController extends AbstractController
 
         $products = $productRepository->findByTags($product->getTags(), $product->getId());
 
-        return $this->json(['product' => $product, 'similarProduct' => $products], 200, [], ['groups' => 'product:read']);
+        return $this->json(['product' => $product, 'similarProduct' => $products], 200, [], ['groups' => 'product:crud']);
     }
 
     /** 
@@ -123,7 +123,7 @@ class ProductController extends AbstractController
         $entityManager->flush();
 
         // Return the response
-        return $this->json($product, Response::HTTP_CREATED, [], ["groups" => "product:create"]);
+        return $this->json($product, Response::HTTP_CREATED, [], ["groups" => "product:crud"]);
     }
 
 
@@ -143,18 +143,13 @@ class ProductController extends AbstractController
         $product = $productRepository->find($id);
         $productData = json_decode($request->getContent(), true);
 
-        $product->setName($productData['name']);
-        $product->setReference($productData['reference']);
-        $product->setPrice($productData['price']);
-        $product->setDescription($productData['description']);
-        $product->setStock($productData['stock']);
-        $product->setLength($productData['length']);
-        $product->setHeight($productData['height']);
-        $product->setWidth($productData['width']);
-        $product->setWeight($productData['weight']);
-        $product->setCreationDate($productData['creationDate']);
-        $product->setIsArchived($productData['isArchived']);
-        $product->setIsCollector($productData['isCollector']);
+        $properties = ['name', 'reference', 'price', 'description', 'stock', 'length', 'height', 'width', 'weight', 'creationDate', 'isArchived', 'isCollector'];
+        foreach ($properties as $property) {
+            if (isset($productData[$property])) {
+                $setterMethod = 'set' . ucfirst($property);
+                $product->$setterMethod($productData[$property]);
+            }
+        }
 
         // Add creators
         $creatorIds = $product->getCreators();
@@ -185,6 +180,6 @@ class ProductController extends AbstractController
         $entityManager->flush();
 
         // returning the answer
-        return $this->json($product, 204, [], ['groups' => 'product:update']);
+        return $this->json($product, 204, [], ['groups' => 'product:crud']);
     }
 }
