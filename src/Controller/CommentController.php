@@ -126,7 +126,7 @@ class CommentController extends AbstractController
         // Saving the entity
         $entityManager->persist($comment);
         $entityManager->flush();
-
+        
         // Returning the updated entity comment in JSON (200 = HTTP_OK)
         return $this->json($comment, 200, [], ['groups' => 'comment:crud']);
     }
@@ -143,7 +143,7 @@ class CommentController extends AbstractController
     {
         // Getting the comment
         $comment = $commentRepository->find($id);
-        
+
         // Deleting the comment
         $entityManager->remove($comment);
         $entityManager->flush();
