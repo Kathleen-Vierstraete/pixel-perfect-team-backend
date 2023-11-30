@@ -8,7 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/person', name: '_person')]
+#[Route('/api/persons', name: '_person')]
 class PersonController extends AbstractController
 {
     #[Route('/', name: 'Get_All_Person', methods: ['GET'])]
