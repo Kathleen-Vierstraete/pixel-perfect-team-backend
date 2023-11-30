@@ -15,15 +15,15 @@ class Person
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups("person:crud")]
+    #[Groups(["person:crud", 'comment:crud'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups("person:crud")]
+    #[Groups(["person:crud", 'comment:crud'])]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups("person:crud")]
+    #[Groups(["person:crud", 'comment:crud'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 10)]
