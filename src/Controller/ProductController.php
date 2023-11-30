@@ -123,7 +123,7 @@ class ProductController extends AbstractController
         $entityManager->flush();
 
         // Return the response
-        return $this->json($product, Response::HTTP_CREATED, [], ["groups" => "product:crud"]);
+        return $this->json($product, 201, [], ["groups" => "product:crud"]);
     }
 
 
@@ -180,6 +180,6 @@ class ProductController extends AbstractController
         $entityManager->flush();
 
         // returning the answer
-        return $this->json($product, 204, [], ['groups' => 'product:crud']);
+        return $this->json(['message'=>'product is updated'],200,['groups' => 'product:crud']);
     }
 }
