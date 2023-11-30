@@ -182,4 +182,20 @@ class ProductController extends AbstractController
         // returning the answer
         return $this->json(['message'=>'product is updated'],200,['groups' => 'product:crud']);
     }
+
+    /** 
+     * Getting a comment by the id of the associated product
+     * 
+     * @param $ProductRepository, the repository to make request from the table Products
+     * @param $id, the id of the associated product
+     *  */
+    #[Route('/{id<\d+>}/comments', name: 'get_by_product', methods: ['get'])]
+    public function getByProduct(Product $product): Response
+    {
+        // Getting all its comments
+        $comments = $product->getComments();
+
+        // Returning the entity comment in JSON (200 = HTTP_OK)
+        return $this->json($comments, 200, [], ['groups' => 'comment:crud']);
+    }
 }
