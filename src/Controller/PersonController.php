@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api/persons', name: '_person')]
 class PersonController extends AbstractController
 {
-    #[Route('/', name: 'Get_All_Person', methods: ['GET'])]
+    #[Route('', name: 'Get_All_Person', methods: ['GET'])]
     public function getAllPerson(PersonRepository $personRepository): JsonResponse
     {
         $person = $personRepository->findAll();
@@ -40,7 +40,7 @@ class PersonController extends AbstractController
         return $this->json($person, 200, [], ['groups'=>'person:crud']);
     }
 
-    #[Route('/{id<\d+>/picks}', name: '_add_picks', methods: 'POST')]
+    #[Route('/{id<\d+>}/picks', name: '_add_picks', methods: 'POST')]
     public function addPick(int $id, Request $request, EntityManagerInterface $entityManager, PickRepository $pickRepository, PurchaseRepository $purchaseRepository, ProductRepository $productRepository, PersonRepository $personRepository, StatusRepository $statusRepository): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -90,6 +90,6 @@ class PersonController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->json("{}",204);
+        return $this->json("{}",200);
     }
 }

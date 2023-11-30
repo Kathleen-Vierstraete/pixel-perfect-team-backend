@@ -16,16 +16,7 @@ use Symfony\Component\Uid\Factory\UuidFactory;
 #[Route('/api/users', name: '_user')]
 class CredentialController extends AbstractController
 {
-    #[Route('/', name: '_get')]
-    public function index(): JsonResponse
-    {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/CredentialController.php',
-        ]);
-    }
-
-    #[Route('/', name: '_add', methods: ['POST'])]
+    #[Route('', name: '_add', methods: ['POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, UuidFactory $uuidFactory): JsonResponse
     {
         $data = json_decode($request->getContent(), true);

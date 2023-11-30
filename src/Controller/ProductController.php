@@ -73,7 +73,7 @@ class ProductController extends AbstractController
      * @param $entityManager, the manager to persist the data
      *  */
 
-    #[Route('/', name: 'create', methods: ['POST'])]
+    #[Route('', name: 'create', methods: ['POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
 
@@ -187,8 +187,8 @@ class ProductController extends AbstractController
      * @param $ProductRepository, the repository to make request from the table Products
      * @param $id, the id of the associated product
      *  */
-    #[Route('/{id<\d+>}/comments', name: 'get_by_product', methods: ['get'])]
-    public function getByProduct(Product $product): Response
+    #[Route('/{id<\d+>}/comments', name: 'get_by_product', methods: ['GET'])]
+    public function getCommentsByProduct(Product $product): Response
     {
         // Getting all its comments
         $comments = $product->getComments();

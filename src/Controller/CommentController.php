@@ -21,7 +21,7 @@ class CommentController extends AbstractController
      * @param $request, a Request entity to call the database
      * @param $entityManager, the manager to persist the data
      *  */
-    #[Route('/', name: 'create', methods: ['POST'])]
+    #[Route('', name: 'create', methods: ['POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         // Creating a Product Entity
