@@ -13,7 +13,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Uid\Factory\UuidFactory;
 
-#[Route('/api/user', name: '_user')]
+#[Route('/api/users', name: '_user')]
 class CredentialController extends AbstractController
 {
     #[Route('/', name: '_get')]
@@ -25,7 +25,7 @@ class CredentialController extends AbstractController
         ]);
     }
 
-    #[Route('/add', name: '_add', methods: ['POST'])]
+    #[Route('/', name: '_add', methods: ['POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, UuidFactory $uuidFactory): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
