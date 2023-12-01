@@ -5,15 +5,16 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\CategoryRepository;
 
+#[Route('/api/categories', name: 'api_category_')]
 class CategoryController extends AbstractController
 {
-    #[Route('/category', name: 'app_category')]
-    public function index(): JsonResponse
+    #[Route('/', name: 'index')]
+    public function index(CategoryRepository $categoryRepository ): JsonResponse
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/CategoryController.php',
-        ]);
+        $categories= $categoryRepository->findAll();
+
+        return $this->json($categories, 200, [], ['groups' => 'category:crud']);
     }
 }
