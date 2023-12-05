@@ -42,9 +42,9 @@ security:
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/products, roles: PUBLIC_ACCESS }
         - { path: ^/api/categories, roles: PUBLIC_ACCESS }
-        - { path: ^/api/user/verify/, roles: PUBLIC_ACCESS }
-        - { path: ^/api/user/add, roles: PUBLIC_ACCESS }
-        - { path: ^/api/comment/\d+, roles: PUBLIC_ACCESS }
+        - { path: ^/api/users/verify, roles: PUBLIC_ACCESS }
+        - { path: ^/api/users, roles: PUBLIC_ACCESS }
+        - { path: ^/api/products/\d+/comments, roles: PUBLIC_ACCESS }
         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
