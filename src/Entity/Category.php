@@ -26,6 +26,10 @@ class Category
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Product::class)]
     private Collection $products;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['product:crud', 'category:crud'])]
+    private ?string $logoUrl = null;
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
@@ -74,6 +78,18 @@ class Category
                 $product->setCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLogoUrl(): ?string
+    {
+        return $this->logoUrl;
+    }
+
+    public function setLogoUrl(?string $logoUrl): static
+    {
+        $this->logoUrl = $logoUrl;
 
         return $this;
     }
