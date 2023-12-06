@@ -36,7 +36,7 @@ class ProductController extends AbstractController
      *
      * @param $productRepository, the repository to make request from the table Products
      */
-    #[Route('/', name: 'index', methods: ['get'])]
+    #[Route('', name: 'index', methods: ['get'])]
     public function index(ProductRepository $productRepository): JsonResponse
     {
         $products = $productRepository->findBy(['isArchived' => 0]);
