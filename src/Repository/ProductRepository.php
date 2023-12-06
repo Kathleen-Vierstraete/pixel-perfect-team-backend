@@ -41,6 +41,25 @@ class ProductRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @return Product[] Returns an array of Product objects
+     */
+    public function findByTagsExcludeProducts(array $tagIds, array $productIds): array
+    {
+        return $this->createQueryBuilder('p')
+            ->distinct()
+            ->join('p.tags', 't')
+            ->where('t.id in (:tagIds)')
+            ->andWhere('p.id NOT IN (:productIds)')
+            ->setParameters([
+                'tagIds' => $tagIds,
+                'productIds' => $productIds
+            ])
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Product[] Returns an array of Product objects
     //     */

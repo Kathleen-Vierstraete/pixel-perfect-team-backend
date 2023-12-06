@@ -45,7 +45,9 @@ security:
         - { path: ^/api/users/verify, roles: PUBLIC_ACCESS }
         - { path: ^/api/users, roles: PUBLIC_ACCESS }
         - { path: ^/api/products/\d+/comments, roles: PUBLIC_ACCESS }
+        - { path: ^/api/products/tags, roles: PUBLIC_ACCESS }
         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
+
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 

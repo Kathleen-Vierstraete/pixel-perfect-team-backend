@@ -67,6 +67,22 @@ class ProductController extends AbstractController
     }
 
     /** 
+     * Getting a product by its ID & the similar products by the tag's ID
+     * 
+     * @param $product, a Product entity
+     * @param $productRepository, the repository to make request from the table Products
+     *  */
+    #[Route('/tags', name: 'by_tags', methods: ['POST'])]
+    public function getByTags(Request $request,ProductRepository $productRepository): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $products = $productRepository->findByTagsExcludeProducts($data["tag_ids"],$data["product_ids"]);
+
+        return $this->json( $products, 200, [], ['groups' => 'product:crud']);
+    }
+
+    /** 
      * Creating a new product
      * 
      * @param $request, a Request entity to call the database
