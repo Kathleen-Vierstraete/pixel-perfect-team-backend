@@ -36,7 +36,10 @@ class CredentialController extends AbstractController
         $person = new Person($data['firstName'], $data['lastName'], $data['phone']);
         $person->setcredential($credential);
         $credential->setperson($person);
-
+        $existingUser = $entityManager->getRepository(Credential::class)->findOneBy(['email' => $data['email']]);
+        if ($existingUser) {
+            return $this->json(['message' => 'User with this email already exists'], 400);
+        }
         $entityManager->persist($credential);
         $entityManager->persist($person);
         $entityManager->flush();
