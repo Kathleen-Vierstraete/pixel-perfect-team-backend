@@ -105,7 +105,7 @@ class ProductController extends AbstractController
         if (isset($productData['reference'])) {
             $existingProduct = $entityManager->getRepository(Product::class)->findOneBy(['reference' => $productData['reference']]);
             if ($existingProduct !== null) {
-                return $this->json(['error' => 'Duplicate reference. Reference must be unique.'], 400);
+                return $this->json(['error' => 'Duplicate reference. Reference must be unique.'], 409);
             }
         }
         foreach ($properties as $property) {
