@@ -29,8 +29,6 @@ class Product
     private ?string $reference = null;
 
     #[ORM\Column]
-
-    #[Groups(['product:crud'])]
     #[Range(min:0)]
     #[Groups(['product:crud',"pick:crud"])]
     private ?int $price = null;
