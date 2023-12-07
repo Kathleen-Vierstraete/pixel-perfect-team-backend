@@ -105,6 +105,9 @@ class ProductController extends AbstractController
         foreach ($properties as $property) {
             if (isset($productData[$property])) {
                 $setterMethod = 'set' . ucfirst($property);
+                if (in_array($property, ['price', 'stock', 'length', 'height', 'width', 'weight', 'creationDate']) && $productData[$property] < 0) {
+                    return $this->json(['error' => 'Negative values are not allowed for ' . $property], 400);
+                }
                 $product->$setterMethod($productData[$property]);
             }
         }
@@ -163,6 +166,9 @@ class ProductController extends AbstractController
         foreach ($properties as $property) {
             if (isset($productData[$property])) {
                 $setterMethod = 'set' . ucfirst($property);
+                if (in_array($property, ['price', 'stock', 'length', 'height', 'width', 'weight','creationDate']) && $productData[$property] < 0) {
+                    return $this->json(['error' => 'Negative values are not allowed for ' . $property], 400);
+                }
                 $product->$setterMethod($productData[$property]);
             }
         }

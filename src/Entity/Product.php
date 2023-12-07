@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Range;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 
@@ -30,6 +31,7 @@ class Product
 
     #[ORM\Column]
     #[Groups(['product:crud'])]
+    #[Range(min:0)]
     private ?int $price = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -38,26 +40,32 @@ class Product
 
     #[ORM\Column]
     #[Groups(['product:crud'])]
+    #[Range(min:0)]
     private ?int $stock = null;
 
     #[ORM\Column]
     #[Groups(['product:crud'])]
+    #[Range(min:0)]
     private ?int $length = null;
 
     #[ORM\Column]
     #[Groups(['product:crud'])]
+    #[Range(min:0)]
     private ?int $height = null;
 
     #[ORM\Column]
     #[Groups(['product:crud'])]
+    #[Range(min:0)]
     private ?int $width = null;
 
     #[ORM\Column]
     #[Groups(['product:crud'])]
+    #[Range(min:0)]
     private ?int $weight = null;
 
     #[ORM\Column]
     #[Groups(['product:crud'])]
+    #[Range(min:0)]
     private ?int $creationDate = null;
 
     #[ORM\Column]
