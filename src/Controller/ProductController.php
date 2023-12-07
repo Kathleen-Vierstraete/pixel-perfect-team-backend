@@ -102,6 +102,12 @@ class ProductController extends AbstractController
         // Setting properties
         $properties = ['name', 'reference', 'price', 'description', 'stock', 'length', 'height', 'width', 'weight', 'creationDate', 'isArchived', 'isCollector'];
 
+        if (isset($productData['reference'])) {
+            $existingProduct = $entityManager->getRepository(Product::class)->findOneBy(['reference' => $productData['reference']]);
+            if ($existingProduct !== null) {
+                return $this->json(['error' => 'Duplicate reference. Reference must be unique.'], 400);
+            }
+        }
         foreach ($properties as $property) {
             if (isset($productData[$property])) {
                 $setterMethod = 'set' . ucfirst($property);
@@ -109,6 +115,12 @@ class ProductController extends AbstractController
                     return $this->json(['error' => 'Negative values are not allowed for ' . $property], 400);
                 }
                 $product->$setterMethod($productData[$property]);
+            }
+        }
+        $requiredFields = ['name', 'reference','description'];
+        foreach ($requiredFields as $field) {
+            if (empty($productData[$field])) {
+                return $this->json(['error' => $field . ' cannot be empty'], 400);
             }
         }
 
