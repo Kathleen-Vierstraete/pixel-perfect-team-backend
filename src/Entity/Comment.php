@@ -42,6 +42,7 @@ class Comment
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('comment:crud')]
     private ?Person $person = null;
 
     public function getId(): ?int

@@ -12,17 +12,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\Range;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-
 class Product
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['product:crud'])]
+    #[Groups(['product:crud',"pick:crud"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['product:crud'])]
+    #[Groups(['product:crud',"pick:crud"])]
     private ?string $name = null;
 
     #[ORM\Column(length: 10)]
@@ -30,8 +29,10 @@ class Product
     private ?string $reference = null;
 
     #[ORM\Column]
+
     #[Groups(['product:crud'])]
     #[Range(min:0)]
+    #[Groups(['product:crud',"pick:crud"])]
     private ?int $price = null;
 
     #[ORM\Column(type: Types::TEXT)]

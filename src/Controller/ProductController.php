@@ -36,7 +36,7 @@ class ProductController extends AbstractController
      *
      * @param $productRepository, the repository to make request from the table Products
      */
-    #[Route('/', name: 'index', methods: ['get'])]
+    #[Route('', name: 'index', methods: ['get'])]
     public function index(ProductRepository $productRepository): JsonResponse
     {
         $products = $productRepository->findBy(['isArchived' => 0]);
@@ -89,7 +89,7 @@ class ProductController extends AbstractController
      * @param $entityManager, the manager to persist the data
      *  */
 
-    #[Route('/add', name: 'create', methods: ['POST'])]
+    #[Route('', name: 'create', methods: ['POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
 
@@ -155,11 +155,9 @@ class ProductController extends AbstractController
      * @param $productRepository, the repository to make request from the table Products
      *  */
 
-    #[Route('/update/{id<\d+>}', name: 'update', methods: ['PATCH'])]
-    public function update(int $id, Request $request, EntityManagerInterface $entityManager, ProductRepository $productRepository): JsonResponse
+    #[Route('/{id<\d+>}', name: 'update', methods: ['PATCH'])]
+    public function update(Product $product, Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
-        // Getting the product to update
-        $product = $productRepository->find($id);
         $productData = json_decode($request->getContent(), true);
 
         $properties = ['name', 'reference', 'price', 'description', 'stock', 'length', 'height', 'width', 'weight', 'creationDate', 'isArchived', 'isCollector'];
@@ -203,5 +201,21 @@ class ProductController extends AbstractController
 
         // returning the answer
         return $this->json(['message'=>'product is updated'],200,['groups' => 'product:crud']);
+    }
+
+    /** 
+     * Getting a comment by the id of the associated product
+     * 
+     * @param $ProductRepository, the repository to make request from the table Products
+     * @param $id, the id of the associated product
+     *  */
+    #[Route('/{id<\d+>}/comments', name: 'get_by_product', methods: ['GET'])]
+    public function getCommentsByProduct(Product $product): Response
+    {
+        // Getting all its comments
+        $comments = $product->getComments();
+
+        // Returning the entity comment in JSON (200 = HTTP_OK)
+        return $this->json($comments, 200, [], ['groups' => 'comment:crud']);
     }
 }

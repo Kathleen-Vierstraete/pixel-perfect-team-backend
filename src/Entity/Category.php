@@ -16,15 +16,19 @@ class Category
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['product:crud'])]
+    #[Groups(['product:crud', 'category:crud'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['product:crud'])]
+    #[Groups(['product:crud', 'category:crud'])]
     private ?string $label = null;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Product::class)]
     private Collection $products;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['product:crud', 'category:crud'])]
+    private ?string $logoUrl = null;
 
     public function __construct()
     {
@@ -74,6 +78,18 @@ class Category
                 $product->setCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLogoUrl(): ?string
+    {
+        return $this->logoUrl;
+    }
+
+    public function setLogoUrl(?string $logoUrl): static
+    {
+        $this->logoUrl = $logoUrl;
 
         return $this;
     }

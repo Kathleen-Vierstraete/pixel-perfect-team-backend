@@ -2,18 +2,122 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
+use App\Entity\Person;
+use App\Entity\Product;
+use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/api/comments', name: 'api_comment_')]
 class CommentController extends AbstractController
 {
-    #[Route('/comment', name: 'app_comment')]
-    public function index(): JsonResponse
+    /** 
+     * Creating a new comment
+     * 
+     * @param $request, a Request entity to call the database
+     * @param $entityManager, the manager to persist the data
+     *  */
+    #[Route('', name: 'create', methods: ['POST'])]
+    public function create(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/CommentController.php',
-        ]);
+        // Creating a Product Entity
+        $comment = new Comment();
+
+        // Getting the content
+        $commentData = json_decode($request->getContent(), true);
+
+        // Setting body, title, rate & vote
+        $properties = ['body', 'title', 'rate', 'vote'];
+
+        foreach ($properties as $property) {
+            if (isset($commentData[$property])) {
+                $setterMethod = 'set' . ucfirst($property);
+                $comment->$setterMethod($commentData[$property]);
+            }
+        }
+
+        // Setting date
+        $comment->setDate(new DateTime('now'));
+
+        // Setting person
+        $personId = $commentData['person_id'];
+        $person = $entityManager->getRepository(Person::class)->find($personId);
+        $comment->setPerson($person);
+
+        // Setting product
+        $productId = $commentData['product_id'];
+        $product = $entityManager->getRepository(Product::class)->find($productId);
+        $comment->setProduct($product);
+
+        // Saving the entity
+        $entityManager->persist($comment);
+        $entityManager->flush();
+
+        // Returning the new entity comment in JSON (201 = HTTP_CREATED)
+        return $this->json($comment, 201, [], ['groups' => 'comment:crud']);
+    }
+
+    /** 
+     * Updating a comment by getting the associated person's id
+     * 
+     * @param $id, the id of the associated person
+     * @param $request, a Request entity to call the database
+     * @param $entityManager, the manager to persist the data
+     * @param $CommentRepository, the repository to make request from the table Comment
+     *  */
+    #[Route('/{id<\d+>}', name: 'update', methods: ['PATCH'])]
+    public function update(Comment $comment, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        // Decode the the content
+        $commentData = json_decode($request->getContent(), true);
+
+        // Setting body, title, rate & vote
+        $properties = ['body', 'title', 'rate', 'vote'];
+
+        foreach ($properties as $property) {
+            if (isset($commentData[$property])) {
+                $setterMethod = 'set' . ucfirst($property);
+                $comment->$setterMethod($commentData[$property]);
+            }
+        }
+
+        // Setting person
+        $personId = $comment->getPerson();
+        $person = $entityManager->getRepository(Person::class)->find($personId);
+        $comment->setPerson($person);
+
+        // Setting product
+        $productId = $comment->getProduct();
+        $product = $entityManager->getRepository(Product::class)->find($productId);
+        $comment->setProduct($product);
+
+        // Saving the entity
+        $entityManager->persist($comment);
+        $entityManager->flush();
+        
+        // Returning the updated entity comment in JSON (200 = HTTP_OK)
+        return $this->json($comment, 200, [], ['groups' => 'comment:crud']);
+    }
+
+    /** 
+     * Deleting a comment by getting its id
+     * 
+     * @param $id, the id of the comment entity
+     * @param $entityManager, the manager to persist the data
+     * @param $CommentRepository, the repository to make request from the table Comment
+     *  */
+    #[Route('/{id<\d+>}', name: 'delete', methods: ['DELETE'])]
+    public function delete(Comment $comment, EntityManagerInterface $entityManager): JsonResponse
+    {
+        // Deleting the comment
+        $entityManager->remove($comment);
+        $entityManager->flush();
+
+        // Returning a message 'Comment delete' (200 = HTTP_OK)
+        return $this->json(['message' => 'Comment deleted'], 200, [], ['groups' => 'comment:crud']);
     }
 }

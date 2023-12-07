@@ -6,6 +6,7 @@ use App\Repository\CredentialRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CredentialRepository::class)]
 class Credential implements UserInterface, PasswordAuthenticatedUserInterface
@@ -16,6 +17,7 @@ class Credential implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups("person:crud")]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -48,6 +50,18 @@ class Credential implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?bool $isBlocked = null;
+
+    public function __construct(string $email,string $resetToken)
+    {
+        $this->email = $email;
+        $this->isVerified = false;
+        $this->isActivated = false;
+        $this->isBlocked = false;
+        $this->isArchived= false;
+        $this->token = "";
+        $this->resetToken = $resetToken;
+
+    }
 
     public function getId(): ?int
     {

@@ -6,6 +6,8 @@ use App\Repository\AddressRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 #[ORM\Entity(repositoryClass: AddressRepository::class)]
 
@@ -14,18 +16,23 @@ class Address
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["person:crud",'address:read'])]
     private ?int $id = null;
     
     #[ORM\Column]
+    #[Groups(["person:crud",'address:read'])]
     private ?int $streetNumber = null;
     
     #[ORM\Column(length: 50)]
+    #[Groups(["person:crud",'address:read'])]
     private ?string $streetName = null;
     
     #[ORM\Column(length: 50)]
+    #[Groups(["person:crud",'address:read'])]
     private ?string $city = null;
     
     #[ORM\Column]
+    #[Groups(["person:crud",'address:read'])]
     private ?int $zipcode = null;
 
     #[ORM\ManyToMany(targetEntity: Person::class, mappedBy: 'addresses')]

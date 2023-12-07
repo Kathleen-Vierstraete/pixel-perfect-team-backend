@@ -2,18 +2,94 @@
 
 namespace App\Controller;
 
+use App\Entity\Person;
+use App\Entity\Pick;
+use App\Entity\Purchase;
+use App\Repository\PersonRepository;
+use App\Repository\PickRepository;
+use App\Repository\ProductRepository;
+use App\Repository\PurchaseRepository;
+use App\Repository\StatusRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/api/persons', name: '_person')]
 class PersonController extends AbstractController
 {
-    #[Route('/person', name: 'app_person')]
-    public function index(): JsonResponse
+    #[Route('', name: 'Get_All_Person', methods: ['GET'])]
+    public function getAllPerson(PersonRepository $personRepository): JsonResponse
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/PersonController.php',
-        ]);
+        $person = $personRepository->findAll();
+
+        return $this->json($person, 200, [], ['groups'=>'person:crud']);
+    }
+    #[Route('/{id<\d+>}', name: 'person_by_id', methods: ['GET'])]
+    public function getById(Person $person = null) : JsonResponse
+    {
+        if(!$person){
+            return $this->json(
+                [
+                    'error' => 'Utilisateur non trouvé'
+                ],
+                JsonResponse::HTTP_NOT_FOUND,
+            );
+        }
+        return $this->json($person, 200, [], ['groups'=>'person:crud']);
+    }
+
+    #[Route('/{id<\d+>}/picks', name: '_add_picks', methods: 'POST')]
+    public function addPick(int $id, Request $request, EntityManagerInterface $entityManager, PickRepository $pickRepository, PurchaseRepository $purchaseRepository, ProductRepository $productRepository, PersonRepository $personRepository, StatusRepository $statusRepository): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $existingPurchases = $purchaseRepository->purchaseExists($id);
+        $purchase = new Purchase();
+
+        if (!$existingPurchases) {
+            $person = $personRepository->find($id);
+            $status = $statusRepository->findOneBy(['name' => 'en commande']);
+            $purchase->setPerson($person)
+                ->setStatus($status);
+            $entityManager->persist($purchase);
+        } else {
+            $purchase = $existingPurchases[0];
+        }
+
+        $picks = [];
+        foreach ($data['product'] as $productData) {
+            $product = $productRepository->find($productData['id']);
+            $pick = $pickRepository->findOneBy(['product' => $product->getId(), 'purchase' => $purchase->getId()]);
+            if ($pick) {
+                array_push($picks, $pick->setQuantity($pick->getQuantity() + $productData['quantity']));
+                continue;
+            }
+
+            array_push($picks, new Pick($purchase, $productData['quantity'], $product));
+        }
+
+        foreach ($picks as $pick){
+            $entityManager->persist($pick);
+        }
+
+        $entityManager->flush();
+
+
+        return $this->json($picks, context: ['groups' => "pick:crud"]);
+    }
+
+    #[Route('/{id<\d+>}/picks', name: '_delete_picks', methods: ['DELETE'])]
+    public function delete(int $id, EntityManagerInterface $entityManager,PickRepository $pickRepository,): JsonResponse
+    {
+        $picks = $pickRepository->findByIdPerson($id);
+
+        foreach ($picks as $pick) {
+            $entityManager->remove($pick);
+        }
+
+        $entityManager->flush();
+
+        return $this->json("{}",200);
     }
 }
