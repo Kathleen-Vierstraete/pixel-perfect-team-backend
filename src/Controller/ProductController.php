@@ -77,9 +77,9 @@ class ProductController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        $products = $productRepository->findByTagsExcludeProducts($data["tag_ids"],$data["product_ids"]);
+        $products = $productRepository->findByTagsExcludeProducts($data["product_ids"]);
 
-        return $this->json( $products, 200, [], ['groups' => 'product:crud']);
+        return $this->json($products);
     }
 
     /** 

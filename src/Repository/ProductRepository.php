@@ -34,7 +34,7 @@ class ProductRepository extends ServiceEntityRepository
             ->andWhere('p.id <> :id')
             ->setParameters([
                 'val' => $value,
-                'id' => $id 
+                'id' => $id
             ])
             ->setMaxResults(10)
             ->getQuery()
@@ -44,20 +44,22 @@ class ProductRepository extends ServiceEntityRepository
     /**
      * @return Product[] Returns an array of Product objects
      */
-    public function findByTagsExcludeProducts(array $tagIds, array $productIds): array
+    public function findByTagsExcludeProducts(array $productIds): array
     {
-        return $this->createQueryBuilder('p')
-            ->distinct()
-            ->join('p.tags', 't')
-            ->where('t.id in (:tagIds)')
-            ->andWhere('p.id NOT IN (:productIds)')
-            ->setParameters([
-                'tagIds' => $tagIds,
-                'productIds' => $productIds
-            ])
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult();
+        $productToString = implode(", ", $productIds);
+        $sql = sprintf("SELECT product.*
+            FROM product
+            JOIN product_tag ON product_tag.product_id = product.id
+            JOIN tag ON tag.id = product_tag.tag_id
+            WHERE tag.id IN (SELECT tag.id 
+                            FROM tag
+                            JOIN product_tag ON product_tag.tag_id = tag.id 
+                            WHERE product_tag.product_id IN (%s)) 
+                            AND product.id NOT IN (%s)",$productToString,$productToString);
+
+        $connexion = $this->getEntityManager()->getConnection();
+        $result = $connexion->executeQuery($sql)->fetchAllAssociative();
+        return $result;
     }
 
     //    /**
