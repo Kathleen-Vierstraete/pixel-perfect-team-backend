@@ -2,6 +2,9 @@
 
 namespace App\EventListener;
 
+use App\Entity\Credential;
+use App\Repository\PersonRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -30,6 +33,7 @@ class JWTCreatedListener
     {
         $payload       = $event->getData();
         $payload['sub'] = $event->getUser()->getId();
+        $payload["user"] = $event->getUser()->getPerson()->getFirstName();
         $event->setData($payload);
     }
 }
