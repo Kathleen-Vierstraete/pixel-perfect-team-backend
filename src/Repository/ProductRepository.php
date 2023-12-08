@@ -47,10 +47,11 @@ class ProductRepository extends ServiceEntityRepository
     public function findByTagsExcludeProducts(array $productIds): array
     {
         $productToString = implode(", ", $productIds);
-        $sql = sprintf("SELECT product.*
+        $sql = sprintf("SELECT product.*,picture.url
             FROM product
             JOIN product_tag ON product_tag.product_id = product.id
             JOIN tag ON tag.id = product_tag.tag_id
+            JOIN picture ON  picture.product_id = product.id
             WHERE tag.id IN (SELECT tag.id 
                             FROM tag
                             JOIN product_tag ON product_tag.tag_id = tag.id 

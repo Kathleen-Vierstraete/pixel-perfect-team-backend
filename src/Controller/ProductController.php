@@ -7,6 +7,7 @@ use App\Entity\Creator;
 use App\Entity\Editor;
 use App\Entity\Product;
 use App\Entity\Tag;
+use App\Repository\PictureRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -78,7 +79,6 @@ class ProductController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         $products = $productRepository->findByTagsExcludeProducts($data["product_ids"]);
-
         return $this->json($products);
     }
 
