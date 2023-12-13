@@ -13,20 +13,20 @@ class Pick
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['product:crud',"pick:crud"])]
+    #[Groups(['product:crud',"pick:crud",'purchase:crud'])]
     private ?int $id = null;
 
     #[ORM\Column]
-    #[Groups(['product:crud',"pick:crud"])]
+    #[Groups(['product:crud',"pick:crud",'purchase:crud'])]
     private ?int $quantity = null;
 
     #[ORM\Column]
-    #[Groups(['product:crud',"pick:crud"])]
+    #[Groups(['product:crud',"pick:crud",'purchase:crud'])]
     private ?int $priceitem = null;
 
     #[ORM\ManyToOne(inversedBy: 'picks')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["pick:crud"])]
+    #[Groups(["pick:crud",'purchase:crud'])]
     private ?Product $product = null;
 
     #[ORM\ManyToOne(inversedBy: 'picks')]

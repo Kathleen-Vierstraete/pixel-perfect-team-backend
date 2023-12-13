@@ -80,7 +80,7 @@ class PersonController extends AbstractController
     }
 
     #[Route('/{id<\d+>}/picks', name: '_delete_picks', methods: ['DELETE'])]
-    public function delete(int $id, EntityManagerInterface $entityManager,PickRepository $pickRepository,): JsonResponse
+    public function deletePick(int $id, EntityManagerInterface $entityManager,PickRepository $pickRepository,): JsonResponse
     {
         $picks = $pickRepository->findByIdPerson($id);
 
@@ -91,5 +91,11 @@ class PersonController extends AbstractController
         $entityManager->flush();
 
         return $this->json("{}",200);
+    }
+
+    #[Route('/{id<\d+>}/purchases', name: '_get_purchase', methods: ['GET'])]
+    public function purchases(Person $person ): JsonResponse
+    {
+        return $this->json($person->getPurchases(),200,[],['groups'=>'purchase:crud']);
     }
 }

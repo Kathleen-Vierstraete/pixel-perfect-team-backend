@@ -17,15 +17,15 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['product:crud',"pick:crud"])]
+    #[Groups(['product:crud',"pick:crud",'purchase:crud'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['product:crud',"pick:crud"])]
+    #[Groups(['product:crud',"pick:crud",'purchase:crud'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 10)]
-    #[Groups(['product:crud'])]
+    #[Groups(['product:crud','purchase:crud'])]
     private ?string $reference = null;
 
     #[ORM\Column]
@@ -94,7 +94,7 @@ class Product
     private ?Editor $editor = null;
     
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Picture::class,cascade: ["persist"])]
-    #[Groups(['product:crud'])]
+    #[Groups(['product:crud','purchase:crud'])]
     private Collection $pictures;
 
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Comment::class,cascade: ["persist"])]
