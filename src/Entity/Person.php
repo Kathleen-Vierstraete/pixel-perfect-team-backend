@@ -44,7 +44,7 @@ class Person
     #[ORM\OneToMany(mappedBy: 'person', targetEntity: Contact::class)]
     private Collection $contacts;
 
-    #[ORM\ManyToMany(targetEntity: Address::class, inversedBy: 'persons')]
+    #[ORM\OneToMany(mappedBy: 'person', targetEntity: Address::class)]
     #[Groups("person:crud")]
     private Collection $addresses;
 

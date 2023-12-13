@@ -35,15 +35,15 @@ class Address
     #[Groups(["person:crud",'address:read'])]
     private ?int $zipcode = null;
 
-    #[ORM\ManyToMany(targetEntity: Person::class, mappedBy: 'addresses')]
-    private Collection $persons;
+    #[ORM\ManyToOne(inversedBy: 'addresses')]
+    #[ORM\JoinColumn(nullable: false)]
+    private Person $person;
 
     #[ORM\OneToMany(mappedBy: 'addresses', targetEntity: Purchase::class)]
     private Collection $purchases;
 
     public function __construct()
     {
-        $this->persons = new ArrayCollection();
         $this->purchases = new ArrayCollection();
     }
 
@@ -100,29 +100,14 @@ class Address
         return $this;
     }
 
-    /**
-     * @return Collection<int, Person>
-     */
-    public function getPersons(): Collection
+    public function getPerson(): ?Person
     {
-        return $this->persons;
+        return $this->person;
     }
 
-    public function addPerson(Person $person): static
+    public function setPerson(?Person $person): static
     {
-        if (!$this->persons->contains($person)) {
-            $this->persons->add($person);
-            $person->addAddress($this);
-        }
-
-        return $this;
-    }
-
-    public function removePerson(Person $person): static
-    {
-        if ($this->persons->removeElement($person)) {
-            $person->removeAddress($this);
-        }
+        $this->person = $person;
 
         return $this;
     }
