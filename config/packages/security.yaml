@@ -46,6 +46,7 @@ security:
         - { path: ^/api/users, roles: PUBLIC_ACCESS }
         - { path: ^/api/products/\d+/comments, roles: PUBLIC_ACCESS }
         - { path: ^/api/products/tags, roles: PUBLIC_ACCESS }
+        - { path: ^/api/stripe, roles: PUBLIC_ACCESS }
         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
 
         # - { path: ^/admin, roles: ROLE_ADMIN }
