@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Address;
+use App\Entity\Credential;
 use App\Entity\Person;
 use App\Entity\Pick;
 use App\Entity\Purchase;
@@ -16,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/api/persons', name: '_person')]
 class PersonController extends AbstractController
@@ -38,6 +40,24 @@ class PersonController extends AbstractController
                 JsonResponse::HTTP_NOT_FOUND,
             );
         }
+        return $this->json($person, 200, [], ['groups' => 'person:crud']);
+    }
+
+    #[Route('/{id<\d+>}', name: 'patch_person', methods: ['patch'])]
+    public function updatePerson(Person $person, Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer): JsonResponse
+    {
+        $serializer->deserialize($request->getContent(), Person::class, 'json', [
+            'object_to_populate' => $person,
+            'ignore_attributes' => ['id'],
+        ]);
+
+        $credentialData = json_decode($request->getContent(), true);
+        if (isset($credentialData['email'])) {
+            $person->getcredential()->setEmail($credentialData['email']);
+        }
+
+        $entityManager->flush();
+
         return $this->json($person, 200, [], ['groups' => 'person:crud']);
     }
 
