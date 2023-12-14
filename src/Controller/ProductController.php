@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Entity\Creator;
 use App\Entity\Editor;
+use App\Entity\Picture;
 use App\Entity\Product;
 use App\Entity\Tag;
 use App\Repository\PictureRepository;
@@ -148,9 +149,25 @@ class ProductController extends AbstractController
         $editor = $entityManager->getRepository(Editor::class)->find($editorId);
         $product->setEditor($editor);
 
-
+        $pictureData = $productData['picture'][0] ?? null;
+        if ($pictureData !== null) {
+            $picture = new Picture();
+            $pictureProperties = ['name', 'url', 'alt'];
+            
+            foreach ($pictureProperties as $property) {
+                if (isset($pictureData[$property])) {
+                    $setterMethod = 'set' . ucfirst($property);
+                    $picture->$setterMethod($pictureData[$property]);
+                }
+            }
+        }
+        // Set the picture for the product
+        $product->addPicture($picture);
+        $picture->setProduct($product);
         // Saving the product entity
         $entityManager->persist($product);
+        $entityManager->persist($picture);
+        
         $entityManager->flush();
 
         // Return the response
