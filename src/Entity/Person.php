@@ -31,9 +31,11 @@ class Person
     private ?string $phoneNumber = null;
 
     #[ORM\OneToMany(mappedBy: 'person', targetEntity: Purchase::class)]
+    #[Groups("person:crud")]
     private Collection $purchases;
 
     #[ORM\OneToMany(mappedBy: 'person', targetEntity: Comment::class)]
+    #[Groups("person:crud")]
     private Collection $comments;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]

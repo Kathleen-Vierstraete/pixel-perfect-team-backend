@@ -131,10 +131,4 @@ class PersonController extends AbstractController
         return $this->json($addresse, 200, [], ['groups' => 'purchase:crud']);
     }
 
-    #[Route('/{id<\d+>}/comments', name: '_get_comments', methods: ['GET'])]
-    public function getCommentsByPerson(Person $person): JsonResponse
-    {
-
-        return $this->json($person->getComments(), 200, [], ['groups' => 'comment:crud']);
-    }
 }

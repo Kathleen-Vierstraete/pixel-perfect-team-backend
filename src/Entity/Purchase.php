@@ -17,23 +17,23 @@ class Purchase
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["pick:crud",'purchase:crud'])]
+    #[Groups(["pick:crud",'purchase:crud',"person:crud"])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[Groups(['purchase:crud'])]
+    #[Groups(['purchase:crud',"person:crud"])]
     private ?\DateTimeInterface $dateDelivery = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[Groups(['purchase:crud'])]
+    #[Groups(['purchase:crud',"person:crud"])]
     private ?\DateTimeInterface $dateExpectedDelivery = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[Groups(['purchase:crud'])]
+    #[Groups(['purchase:crud',"person:crud"])]
     private ?\DateTimeInterface $datePurchase = null;
 
     #[ORM\OneToMany(mappedBy: 'purchase', targetEntity: Pick::class)]
-    #[Groups(['purchase:crud'])]
+    #[Groups(['purchase:crud',"person:crud"])]
     private Collection $picks;
 
     #[ORM\ManyToOne(inversedBy: 'purchases')]
@@ -43,7 +43,7 @@ class Purchase
 
     #[ORM\ManyToOne(inversedBy: 'purchases')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["pick:crud",'purchase:crud'])]
+    #[Groups(["pick:crud",'purchase:crud',"person:crud"])]
     private ?Status $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'purchases')]
@@ -51,7 +51,7 @@ class Purchase
     private ?Address $addresses = null;
 
     #[ORM\Column(length: 36)]
-    #[Groups(['purchase:crud'])]
+    #[Groups(['purchase:crud',"person:crud"])]
     private ?string $reference = null;
 
     public function __construct(Person $person = null)
