@@ -38,6 +38,7 @@ class Comment
     private ?int $vote = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
+    #[Groups(['person:crud'])]
     private ?Product $product = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
