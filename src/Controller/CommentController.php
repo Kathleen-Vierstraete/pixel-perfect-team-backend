@@ -75,7 +75,7 @@ class CommentController extends AbstractController
         // Decode the the content
         $commentData = json_decode($request->getContent(), true);
 
-        // Setting body, title, rate & vote
+        // Setting body, title & rate
         $properties = ['body', 'title', 'rate'];
 
         foreach ($properties as $property) {
@@ -109,18 +109,6 @@ class CommentController extends AbstractController
 
         // Setting the vote count
         $comment->setVote($commentData['vote']);
-
-        // ? nécéssaire ?
-        // Setting person
-        $personId = $comment->getPerson();
-        $person = $entityManager->getRepository(Person::class)->find($personId);
-        $comment->setPerson($person);
-        
-        // Setting product
-        $productId = $comment->getProduct();
-        $product = $entityManager->getRepository(Product::class)->find($productId);
-        $comment->setProduct($product);
-        // ? nécéssaire ?
 
         // Saving the entity
         $entityManager->persist($comment);
