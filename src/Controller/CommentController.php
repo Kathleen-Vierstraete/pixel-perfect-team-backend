@@ -64,7 +64,7 @@ class CommentController extends AbstractController
     /** 
      * Updating a comment by getting the associated person's id
      * 
-     * @param $id, the id of the associated person
+     * @param $id, the id of the associated comment
      * @param $request, a Request entity to call the database
      * @param $entityManager, the manager to persist the data
      * @param $CommentRepository, the repository to make request from the table Comment
@@ -76,7 +76,7 @@ class CommentController extends AbstractController
         $commentData = json_decode($request->getContent(), true);
 
         // Setting body, title, rate & vote
-        $properties = ['body', 'title', 'rate', 'vote'];
+        $properties = ['body', 'title', 'rate'];
 
         foreach ($properties as $property) {
             if (isset($commentData[$property])) {
@@ -85,15 +85,42 @@ class CommentController extends AbstractController
             }
         }
 
+        // Saving the entity
+        $entityManager->persist($comment);
+        $entityManager->flush();
+        
+        // Returning the updated entity comment in JSON (200 = HTTP_OK)
+        return $this->json($comment, 200, [], ['groups' => 'comment:crud']);
+    }
+
+    /** 
+     * Updating a comment's votes by getting the associated person's id
+     * 
+     * @param $id, the id of the associated comment
+     * @param $request, a Request entity to call the database
+     * @param $entityManager, the manager to persist the data
+     * @param $CommentRepository, the repository to make request from the table Comment
+     *  */
+    #[Route('/{id<\d+>}/vote', name: 'vote', methods: ['PATCH'])]
+    public function vote(Comment $comment, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        // Decode the the content
+        $commentData = json_decode($request->getContent(), true);
+
+        // Setting the vote count
+        $comment->setVote($commentData['vote']);
+
+        // ? nécéssaire ?
         // Setting person
         $personId = $comment->getPerson();
         $person = $entityManager->getRepository(Person::class)->find($personId);
         $comment->setPerson($person);
-
+        
         // Setting product
         $productId = $comment->getProduct();
         $product = $entityManager->getRepository(Product::class)->find($productId);
         $comment->setProduct($product);
+        // ? nécéssaire ?
 
         // Saving the entity
         $entityManager->persist($comment);
