@@ -149,9 +149,9 @@ class ProductController extends AbstractController
         $editor = $entityManager->getRepository(Editor::class)->find($editorId);
         $product->setEditor($editor);
 
-        $pictureData = $productData['picture'][0] ?? null;
+        $pictureData = $productData['pictures'][0] ?? null;
+        $picture = new Picture();
         if ($pictureData !== null) {
-            $picture = new Picture();
             $pictureProperties = ['name', 'url', 'alt'];
             
             foreach ($pictureProperties as $property) {
