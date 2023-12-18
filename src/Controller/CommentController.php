@@ -62,7 +62,7 @@ class CommentController extends AbstractController
     }
 
     /** 
-     * Updating a comment by getting the associated person's id
+     * Updating a comment by getting the associated comment's id
      * 
      * @param $id, the id of the associated comment
      * @param $request, a Request entity to call the database
