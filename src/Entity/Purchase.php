@@ -48,6 +48,7 @@ class Purchase
 
     #[ORM\ManyToOne(inversedBy: 'purchases')]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups("person:crud")]
     private ?Address $addresses = null;
 
     #[ORM\Column(length: 36)]

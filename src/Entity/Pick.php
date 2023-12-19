@@ -17,11 +17,11 @@ class Pick
     private ?int $id = null;
 
     #[ORM\Column]
-    #[Groups(['product:crud',"pick:crud",'purchase:crud'])]
+    #[Groups(['product:crud',"pick:crud",'purchase:crud','person:crud'])]
     private ?int $quantity = null;
 
     #[ORM\Column]
-    #[Groups(['product:crud',"pick:crud",'purchase:crud'])]
+    #[Groups(['product:crud',"pick:crud",'purchase:crud','person:crud'])]
     private ?int $priceitem = null;
 
     #[ORM\ManyToOne(inversedBy: 'picks')]
