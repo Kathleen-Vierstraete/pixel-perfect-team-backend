@@ -26,7 +26,7 @@ class Pick
 
     #[ORM\ManyToOne(inversedBy: 'picks')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["pick:crud",'purchase:crud'])]
+    #[Groups(["pick:crud",'purchase:crud','person:crud'])]
     private ?Product $product = null;
 
     #[ORM\ManyToOne(inversedBy: 'picks')]
