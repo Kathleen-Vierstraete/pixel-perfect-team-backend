@@ -47,4 +47,10 @@ class CredentialController extends AbstractController
 
         return $this->json(['message' => 'user is verified']);
     }
+    #[Route('/{id<\d+>}', name: '_getbyid',methods: ['GET'])]
+    public function getById(Credential $credential): JsonResponse
+    {
+        
+        return $this->json($credential->getperson(), 200, [], ['groups' => 'person:crud']);
+    }
 }

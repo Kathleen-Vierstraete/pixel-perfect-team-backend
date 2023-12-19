@@ -14,35 +14,36 @@ class Comment
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['product:crud','comment:crud'])]
+    #[Groups(['product:crud','comment:crud','person:crud'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['product:crud','comment:crud'])]
+    #[Groups(['product:crud','comment:crud','person:crud'])]
     private ?string $body = null;
 
     #[ORM\Column(length: 20)]
-    #[Groups(['product:crud','comment:crud'])]
+    #[Groups(['product:crud','comment:crud','person:crud'])]
     private ?string $title = null;
 
     #[ORM\Column]
-    #[Groups(['product:crud','comment:crud'])]
+    #[Groups(['product:crud','comment:crud','person:crud'])]
     private ?int $rate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(['product:crud','comment:crud'])]
+    #[Groups(['product:crud','comment:crud','person:crud'])]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['product:crud','comment:crud'])]
+    #[Groups(['product:crud','comment:crud','person:crud'])]
     private ?int $vote = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
+    #[Groups(['person:crud'])]
     private ?Product $product = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups('comment:crud')]
+    #[Groups(['product:crud','comment:crud'])]
     private ?Person $person = null;
 
     public function getId(): ?int

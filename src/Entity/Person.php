@@ -15,15 +15,15 @@ class Person
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["person:crud", 'comment:crud'])]
+    #[Groups(["person:crud", 'comment:crud', 'product:crud'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(["person:crud", 'comment:crud'])]
+    #[Groups(["person:crud", 'comment:crud', 'product:crud'])]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(["person:crud", 'comment:crud'])]
+    #[Groups(["person:crud", 'comment:crud', 'product:crud'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 10)]
@@ -31,9 +31,11 @@ class Person
     private ?string $phoneNumber = null;
 
     #[ORM\OneToMany(mappedBy: 'person', targetEntity: Purchase::class)]
+    #[Groups("person:crud")]
     private Collection $purchases;
 
     #[ORM\OneToMany(mappedBy: 'person', targetEntity: Comment::class)]
+    #[Groups("person:crud")]
     private Collection $comments;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
@@ -44,7 +46,7 @@ class Person
     #[ORM\OneToMany(mappedBy: 'person', targetEntity: Contact::class)]
     private Collection $contacts;
 
-    #[ORM\ManyToMany(targetEntity: Address::class, inversedBy: 'persons')]
+    #[ORM\OneToMany(mappedBy: 'person', targetEntity: Address::class)]
     #[Groups("person:crud")]
     private Collection $addresses;
 

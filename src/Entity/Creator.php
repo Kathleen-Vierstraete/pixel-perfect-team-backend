@@ -16,11 +16,11 @@ class Creator
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups('product:crud')]
+    #[Groups(['product:crud','admin:crud'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
-    #[Groups('product:crud')]
+    #[Groups(['product:crud','admin:crud'])]
     private ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'Creator')]

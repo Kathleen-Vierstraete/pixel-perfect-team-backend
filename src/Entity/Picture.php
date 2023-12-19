@@ -15,19 +15,19 @@ class Picture
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['product:crud'])]
+    #[Groups(['product:crud','purchase:crud','person:crud'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['product:crud'])]
+    #[Groups(['product:crud','purchase:crud','person:crud'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['product:crud'])]
+    #[Groups(['product:crud','purchase:crud','person:crud'])]
     private ?string $url = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['product:crud'])]
+    #[Groups(['product:crud','purchase:crud','person:crud'])]
     private ?string $alt = null;
 
     #[ORM\ManyToOne(inversedBy: 'pictures')]

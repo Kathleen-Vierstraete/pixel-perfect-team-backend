@@ -16,34 +16,38 @@ class Address
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["person:crud",'address:read'])]
+    #[Groups(["person:crud", 'address:read'])]
     private ?int $id = null;
-    
+
     #[ORM\Column]
-    #[Groups(["person:crud",'address:read'])]
+    #[Groups(["person:crud", 'address:read'])]
     private ?int $streetNumber = null;
-    
+
     #[ORM\Column(length: 50)]
-    #[Groups(["person:crud",'address:read'])]
+    #[Groups(["person:crud", 'address:read'])]
     private ?string $streetName = null;
-    
+
     #[ORM\Column(length: 50)]
-    #[Groups(["person:crud",'address:read'])]
+    #[Groups(["person:crud", 'address:read'])]
     private ?string $city = null;
-    
+
     #[ORM\Column]
-    #[Groups(["person:crud",'address:read'])]
+    #[Groups(["person:crud", 'address:read'])]
     private ?int $zipcode = null;
 
-    #[ORM\ManyToMany(targetEntity: Person::class, mappedBy: 'addresses')]
-    private Collection $persons;
+    #[ORM\ManyToOne(inversedBy: 'addresses')]
+    #[ORM\JoinColumn(nullable: false)]
+    private Person $person;
 
     #[ORM\OneToMany(mappedBy: 'addresses', targetEntity: Purchase::class)]
     private Collection $purchases;
 
-    public function __construct()
+    public function __construct(int $streetNumber = 0, string $streetName = "", string $city = "", int $zipcode = 00000)
     {
-        $this->persons = new ArrayCollection();
+        $this->streetNumber = $streetNumber;
+        $this->streetName = $streetName;
+        $this->city = $city;
+        $this->zipcode = $zipcode;
         $this->purchases = new ArrayCollection();
     }
 
@@ -100,29 +104,14 @@ class Address
         return $this;
     }
 
-    /**
-     * @return Collection<int, Person>
-     */
-    public function getPersons(): Collection
+    public function getPerson(): ?Person
     {
-        return $this->persons;
+        return $this->person;
     }
 
-    public function addPerson(Person $person): static
+    public function setPerson(?Person $person): static
     {
-        if (!$this->persons->contains($person)) {
-            $this->persons->add($person);
-            $person->addAddress($this);
-        }
-
-        return $this;
-    }
-
-    public function removePerson(Person $person): static
-    {
-        if ($this->persons->removeElement($person)) {
-            $person->removeAddress($this);
-        }
+        $this->person = $person;
 
         return $this;
     }
@@ -147,9 +136,9 @@ class Address
 
     public function removePurchase(Purchase $purchase): static
     {
-        if ($this->purchases->removeElement($purchase)&&($purchase->getAddresses() === $this)) {
+        if ($this->purchases->removeElement($purchase) && ($purchase->getAddresses() === $this)) {
             // set the owning side to null (unless already changed)
-                $purchase->setAddresses(null);
+            $purchase->setAddresses(null);
         }
 
         return $this;
