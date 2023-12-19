@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Address;
+use App\Entity\Credential;
 use App\Entity\Person;
 use App\Entity\Pick;
 use App\Entity\Purchase;
@@ -15,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/api/persons', name: '_person')]
 class PersonController extends AbstractController
@@ -24,12 +27,12 @@ class PersonController extends AbstractController
     {
         $person = $personRepository->findAll();
 
-        return $this->json($person, 200, [], ['groups'=>'person:crud']);
+        return $this->json($person, 200, [], ['groups' => 'person:crud']);
     }
     #[Route('/{id<\d+>}', name: 'person_by_id', methods: ['GET'])]
-    public function getById(Person $person = null) : JsonResponse
+    public function getById(Person $person = null): JsonResponse
     {
-        if(!$person){
+        if (!$person) {
             return $this->json(
                 [
                     'error' => 'Utilisateur non trouvé'
@@ -37,7 +40,25 @@ class PersonController extends AbstractController
                 JsonResponse::HTTP_NOT_FOUND,
             );
         }
-        return $this->json($person, 200, [], ['groups'=>'person:crud']);
+        return $this->json($person, 200, [], ['groups' => 'person:crud']);
+    }
+
+    #[Route('/{id<\d+>}', name: 'patch_person', methods: ['patch'])]
+    public function updatePerson(Person $person, Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer): JsonResponse
+    {
+        $serializer->deserialize($request->getContent(), Person::class, 'json', [
+            'object_to_populate' => $person,
+            'ignore_attributes' => ['id'],
+        ]);
+
+        $credentialData = json_decode($request->getContent(), true);
+        if (isset($credentialData['email'])) {
+            $person->getcredential()->setEmail($credentialData['email']);
+        }
+
+        $entityManager->flush();
+
+        return $this->json($person, 200, [], ['groups' => 'person:crud']);
     }
 
     #[Route('/{id<\d+>}/picks', name: '_add_picks', methods: 'POST')]
@@ -69,7 +90,7 @@ class PersonController extends AbstractController
             array_push($picks, new Pick($purchase, $productData['quantity'], $product));
         }
 
-        foreach ($picks as $pick){
+        foreach ($picks as $pick) {
             $entityManager->persist($pick);
         }
 
@@ -80,7 +101,7 @@ class PersonController extends AbstractController
     }
 
     #[Route('/{id<\d+>}/picks', name: '_delete_picks', methods: ['DELETE'])]
-    public function delete(int $id, EntityManagerInterface $entityManager,PickRepository $pickRepository,): JsonResponse
+    public function deletePick(int $id, EntityManagerInterface $entityManager, PickRepository $pickRepository,): JsonResponse
     {
         $picks = $pickRepository->findByIdPerson($id);
 
@@ -90,6 +111,24 @@ class PersonController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->json("{}",200);
+        return $this->json("{}", 200);
     }
+
+    #[Route('/{id<\d+>}/purchases', name: '_get_purchase', methods: ['GET'])]
+    public function purchases(Person $person): JsonResponse
+    {
+        return $this->json($person->getPurchases(), 200, [], ['groups' => 'purchase:crud']);
+    }
+
+    #[Route('/{id<\d+>}/addresses', name: '_add_addresse', methods: ['POST'])]
+    public function addAddresses(Person $person, Request $request, EntityManagerInterface $entityManager,): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $addresse = new Address(intval($data["streetNumber"]), $data["streetName"], $data["city"], intval($data["zipcode"]));
+        $addresse->setPerson($person);
+        $entityManager->persist($addresse);
+        $entityManager->flush();
+        return $this->json($addresse, 200, [], ['groups' => 'purchase:crud']);
+    }
+
 }
