@@ -22,17 +22,17 @@ class StripeController extends AbstractController
         // Retrieve necessary data from the request (e.g., items, amount, currency)
         $requestData = json_decode($request->getContent(), true);
         // TODO : get properties
-        $items = $requestData['items'];
+        $products = $requestData['products'];
 
-        function calculateOrderAmount(array $items): int {
+        function calculateOrderAmount(array $products ): int {
             // Replace this constant with a calculation of the order's amount
             // Calculate the order total on the server to prevent
             // people from directly manipulating the amount on the client
 
             $totalAmount = 0;
 
-            foreach ($items as $item) {
-                $totalAmount += $item['amount'];
+            foreach ($products  as $product) {
+                $totalAmount += $product['amount'];
             }
 
             return $totalAmount;
@@ -45,9 +45,9 @@ class StripeController extends AbstractController
             $jsonObj = json_decode($jsonStr, true);
 
             // Convert the JSON object to an array
-            $itemsArray = $jsonObj['items'];
+            $productsArray = $jsonObj['products'];
 
-            $totalAmount = calculateOrderAmount($itemsArray);
+            $totalAmount = calculateOrderAmount($productsArray);
 
 
             // Create a PaymentIntent
