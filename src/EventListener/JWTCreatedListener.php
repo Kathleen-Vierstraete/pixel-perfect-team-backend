@@ -32,7 +32,7 @@ class JWTCreatedListener
     public function onJWTCreated(JWTCreatedEvent $event)
     {
         $payload       = $event->getData();
-        $payload['sub'] = $event->getUser()->getId();
+        $payload['sub'] = $event->getUser()->getPerson()->getId();
         $payload["user"] = $event->getUser()->getPerson()->getFirstName();
         $event->setData($payload);
     }

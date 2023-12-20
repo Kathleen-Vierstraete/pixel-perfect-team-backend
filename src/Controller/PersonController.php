@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Uid\Factory\UuidFactory;
 
 #[Route('/api/persons', name: '_person')]
 class PersonController extends AbstractController
@@ -62,7 +63,7 @@ class PersonController extends AbstractController
     }
 
     #[Route('/{id<\d+>}/picks', name: '_add_picks', methods: 'POST')]
-    public function addPick(int $id, Request $request, EntityManagerInterface $entityManager, PickRepository $pickRepository, PurchaseRepository $purchaseRepository, ProductRepository $productRepository, PersonRepository $personRepository, StatusRepository $statusRepository): JsonResponse
+    public function addPick(int $id, Request $request, EntityManagerInterface $entityManager, PickRepository $pickRepository, PurchaseRepository $purchaseRepository, ProductRepository $productRepository, PersonRepository $personRepository, StatusRepository $statusRepository, UuidFactory $uuidFactory): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
         $existingPurchases = $purchaseRepository->purchaseExists($id);
@@ -72,7 +73,8 @@ class PersonController extends AbstractController
             $person = $personRepository->find($id);
             $status = $statusRepository->findOneBy(['name' => 'en commande']);
             $purchase->setPerson($person)
-                ->setStatus($status);
+                ->setStatus($status)
+                ->setReference($uuidFactory->create());
             $entityManager->persist($purchase);
         } else {
             $purchase = $existingPurchases[0];
@@ -130,5 +132,4 @@ class PersonController extends AbstractController
         $entityManager->flush();
         return $this->json($addresse, 200, [], ['groups' => 'purchase:crud']);
     }
-
 }
