@@ -31,7 +31,7 @@ class CommentController extends AbstractController
         $commentData = json_decode($request->getContent(), true);
 
         // Setting body, title, rate & vote
-        $properties = ['body', 'title', 'rate', 'vote'];
+        $properties = ['body', 'title', 'rate'];
 
         foreach ($properties as $property) {
             if (isset($commentData[$property])) {
@@ -42,6 +42,9 @@ class CommentController extends AbstractController
 
         // Setting date
         $comment->setDate(new DateTime('now'));
+
+        // Setting vote to 0
+        $comment->setVote(0);
 
         // Setting person
         $personId = $commentData['person_id'];
