@@ -85,7 +85,7 @@ class PersonController extends AbstractController
             $product = $productRepository->find($productData['id']);
             $pick = $pickRepository->findOneBy(['product' => $product->getId(), 'purchase' => $purchase->getId()]);
             if ($pick) {
-                array_push($picks, $pick->setQuantity($pick->getQuantity() + $productData['quantity']));
+                array_push($picks, $pick->setQuantity($productData['quantity']));
                 continue;
             }
 
