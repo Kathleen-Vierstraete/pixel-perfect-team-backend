@@ -43,7 +43,7 @@ class PurchaseController extends AbstractController
         return $this->json($purchase, 200, [], ['groups' => 'purchase:crud']);
     }
 
-    #[Route('/{id<\d+>}/addresses/{idAddresse<\d+>}', name: '_set_address', methods: ['PUT'])]
+    #[Route('/{purchase<\d+>}/addresses/{address<\d+>}', name: '_set_address', methods: ['PUT'])]
     public function setPurchaseAddress(Purchase $purchase, Address $address, EntityManagerInterface $entityManager, Request $request): JsonResponse
     {
         $purchase->setAddresses($address);
