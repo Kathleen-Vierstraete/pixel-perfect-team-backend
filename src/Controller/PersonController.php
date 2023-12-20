@@ -132,4 +132,10 @@ class PersonController extends AbstractController
         $entityManager->flush();
         return $this->json($addresse, 200, [], ['groups' => 'purchase:crud']);
     }
+
+    #[Route('/{id<\d+>}/addresses', name: '_get_addresse', methods: ['GET'])]
+    public function getAddresses(Person $person): JsonResponse
+    {
+        return $this->json($person->getAddresses(), 200, [], ['groups' => 'address:read']);
+    }
 }
