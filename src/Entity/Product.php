@@ -94,7 +94,7 @@ class Product
     private ?Editor $editor = null;
     
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Picture::class,cascade: ["persist"])]
-    #[Groups(['product:crud','purchase:crud','person:crud'])]
+    #[Groups(['product:crud','purchase:crud','person:crud','pick:crud'])]
     private Collection $pictures;
 
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: Comment::class,cascade: ["persist"])]
