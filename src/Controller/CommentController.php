@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/comment', name: 'api_comment_')]
+#[Route('/api/comments', name: 'api_comment_')]
 class CommentController extends AbstractController
 {
     /** 
@@ -150,5 +150,22 @@ class CommentController extends AbstractController
 
         // Returning a message 'Comment delete' (200 = HTTP_OK)
         return $this->json(['message' => 'Comment deleted'], 200, [], ['groups' => 'comment:crud']);
+    }
+
+    #[Route('/{id<\d+>}/vote', name: 'vote', methods: ['PATCH'])]
+    public function vote(Comment $comment, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        // Decode the the content
+        $commentData = json_decode($request->getContent(), true);
+
+        // Setting the vote count
+        $comment->setVote($commentData['vote']);
+
+        // Saving the entity
+        $entityManager->persist($comment);
+        $entityManager->flush();
+        
+        // Returning the updated entity comment in JSON (200 = HTTP_OK)
+        return $this->json($comment, 200, [], ['groups' => 'comment:crud']);
     }
 }
