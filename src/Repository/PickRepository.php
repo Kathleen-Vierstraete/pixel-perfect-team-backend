@@ -28,7 +28,9 @@ class PickRepository extends ServiceEntityRepository
             ->join('p.purchase', 'pu')
             ->join('p.product', 'pr')
             ->join('pu.person', 'per')
+            ->join('pu.status','st')
             ->where('per.id = :userId')
+            ->andWhere("st.name = 'en commande'")
             ->setParameter('userId',  $personId)
             ->getQuery()
             ->getResult();
