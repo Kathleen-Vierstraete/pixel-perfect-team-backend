@@ -5,16 +5,39 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Entity\Person;
 use App\Entity\Product;
+use App\Repository\CommentRepository;
+use App\Repository\PersonRepository;
+use App\Repository\ProductRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/comments', name: 'api_comment_')]
+#[Route('/api/comment', name: 'api_comment_')]
 class CommentController extends AbstractController
 {
+    /** 
+     * Getting a comment by the id of the associated product
+     * 
+     * @param $ProductRepository, the repository to make request from the table Products
+     * @param $id, the id of the associated product
+     *  */
+    #[Route('/{id<\d+>}', name: 'get_by_product', methods: ['get'])]
+    public function getByProduct(ProductRepository $productRepository, int $id, PersonRepository $personRepository): Response
+    {
+        // Getting the product 
+        $product = $productRepository->find($id);
+
+        // Getting all its comments
+        $comments = $product->getComments();
+
+        // Returning the entity comment in JSON (200 = HTTP_OK)
+        return $this->json($comments, 200, [], ['groups' => 'comment:crud']);
+    }
+
     /** 
      * Creating a new comment
      * 
@@ -24,6 +47,7 @@ class CommentController extends AbstractController
     #[Route('', name: 'create', methods: ['POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
+
         // Creating a Product Entity
         $comment = new Comment();
 
@@ -31,7 +55,7 @@ class CommentController extends AbstractController
         $commentData = json_decode($request->getContent(), true);
 
         // Setting body, title, rate & vote
-        $properties = ['body', 'title', 'rate', 'vote'];
+        $properties = ['body', 'title', 'rate'];
 
         foreach ($properties as $property) {
             if (isset($commentData[$property])) {
@@ -62,21 +86,25 @@ class CommentController extends AbstractController
     }
 
     /** 
-     * Updating a comment by getting the associated comment's id
+     * Updating a comment by getting the associated person's id
      * 
-     * @param $id, the id of the associated comment
+     * @param $id, the id of the associated person
      * @param $request, a Request entity to call the database
      * @param $entityManager, the manager to persist the data
      * @param $CommentRepository, the repository to make request from the table Comment
      *  */
-    #[Route('/{id<\d+>}', name: 'update', methods: ['PATCH'])]
-    public function update(Comment $comment, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    #[Route('/update/{id<\d+>}', name: 'update', methods: ['PATCH'])]
+    public function update(int $id, Request $request, EntityManagerInterface $entityManager, CommentRepository $commentRepository): JsonResponse
     {
+
+        // Getting the Product Entity to update
+        $comment = $commentRepository->find($id);
+
         // Decode the the content
         $commentData = json_decode($request->getContent(), true);
 
-        // Setting body, title & rate
-        $properties = ['body', 'title', 'rate'];
+        // Setting body, title, rate & vote
+        $properties = ['body', 'title', 'rate', 'vote'];
 
         foreach ($properties as $property) {
             if (isset($commentData[$property])) {
@@ -85,30 +113,15 @@ class CommentController extends AbstractController
             }
         }
 
-        // Saving the entity
-        $entityManager->persist($comment);
-        $entityManager->flush();
-        
-        // Returning the updated entity comment in JSON (200 = HTTP_OK)
-        return $this->json($comment, 200, [], ['groups' => 'comment:crud']);
-    }
+        // Setting person
+        $personId = $comment->getPerson();
+        $person = $entityManager->getRepository(Person::class)->find($personId);
+        $comment->setPerson($person);
 
-    /** 
-     * Updating a comment's votes by getting the associated person's id
-     * 
-     * @param $id, the id of the associated comment
-     * @param $request, a Request entity to call the database
-     * @param $entityManager, the manager to persist the data
-     * @param $CommentRepository, the repository to make request from the table Comment
-     *  */
-    #[Route('/{id<\d+>}/vote', name: 'vote', methods: ['PATCH'])]
-    public function vote(Comment $comment, Request $request, EntityManagerInterface $entityManager): JsonResponse
-    {
-        // Decode the the content
-        $commentData = json_decode($request->getContent(), true);
-
-        // Setting the vote count
-        $comment->setVote($commentData['vote']);
+        // Setting product
+        $productId = $comment->getProduct();
+        $product = $entityManager->getRepository(Product::class)->find($productId);
+        $comment->setProduct($product);
 
         // Saving the entity
         $entityManager->persist($comment);
@@ -125,9 +138,12 @@ class CommentController extends AbstractController
      * @param $entityManager, the manager to persist the data
      * @param $CommentRepository, the repository to make request from the table Comment
      *  */
-    #[Route('/{id<\d+>}', name: 'delete', methods: ['DELETE'])]
-    public function delete(Comment $comment, EntityManagerInterface $entityManager): JsonResponse
+    #[Route('/delete/{id<\d+>}', name: 'delete', methods: ['DELETE'])]
+    public function delete(int $id, EntityManagerInterface $entityManager, CommentRepository $commentRepository): JsonResponse
     {
+        // Getting the comment
+        $comment = $commentRepository->find($id);
+
         // Deleting the comment
         $entityManager->remove($comment);
         $entityManager->flush();

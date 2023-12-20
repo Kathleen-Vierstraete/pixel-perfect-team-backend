@@ -3,13 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Entity\Comment;
 use App\Entity\Creator;
 use App\Entity\Editor;
+use App\Entity\Person;
 use App\Entity\Picture;
 use App\Entity\Product;
 use App\Entity\Tag;
 use App\Repository\PictureRepository;
 use App\Repository\ProductRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -247,4 +250,50 @@ class ProductController extends AbstractController
         // Returning the entity comment in JSON (200 = HTTP_OK)
         return $this->json($comments, 200, [], ['groups' => 'comment:crud']);
     }
+
+    /** 
+     * Creating a new comment
+     * 
+     * @param $request, a Request entity to call the database
+     * @param $entityManager, the manager to persist the data
+     *  */
+    #[Route('/{id<\d+>}/comments', name: 'create_comment', methods: ['POST'])]
+    public function createComment(Product $product, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+
+        // Creating a Product Entity
+        $comment = new Comment();
+
+        // Getting the content
+        $commentData = json_decode($request->getContent(), true);
+
+        // Setting body, title, rate & vote
+        $properties = ['body', 'title', 'rate'];
+
+        foreach ($properties as $property) {
+            if (isset($commentData[$property])) {
+                $setterMethod = 'set' . ucfirst($property);
+                $comment->$setterMethod($commentData[$property]);
+            }
+        }
+
+        // Setting date
+        $comment->setDate(new DateTime('now'));
+
+        // Setting person
+        $personId = $commentData['person_id'];
+        $person = $entityManager->getRepository(Person::class)->find($personId);
+        $comment->setPerson($person);
+
+        // Setting product
+        $comment->setProduct($product);
+
+        // Saving the entity
+        $entityManager->persist($comment);
+        $entityManager->flush();
+
+        // Returning the new entity comment in JSON (201 = HTTP_CREATED)
+        return $this->json($comment, 201, [], ['groups' => 'comment:crud']);
+    }
+    
 }
