@@ -27,6 +27,7 @@ class ProductController extends AbstractController
      * Getting all products
      *
      * @param $productRepository, the repository to make request from the table Products
+     * @return JsonResponse
      */
     #[Route('/backoffice', name: 'index_backoffice', methods: ['get'])]
     public function indexBackoffice(ProductRepository $productRepository): JsonResponse
@@ -40,6 +41,7 @@ class ProductController extends AbstractController
      * Getting all non-archived products
      *
      * @param $productRepository, the repository to make request from the table Products
+     * @return JsonResponse
      */
     #[Route('', name: 'index', methods: ['get'])]
     public function index(ProductRepository $productRepository): JsonResponse
@@ -53,6 +55,7 @@ class ProductController extends AbstractController
      * 
      * @param $product, a Product entity
      * @param $productRepository, the repository to make request from the table Products
+     * @return JsonResponse
      *  */
     #[Route('/{id<\d+>}', name: 'by_id', methods: ['get'])]
     public function getById(Product $product = null, ProductRepository $productRepository): JsonResponse
@@ -76,6 +79,7 @@ class ProductController extends AbstractController
      * 
      * @param $product, a Product entity
      * @param $productRepository, the repository to make request from the table Products
+     * @return JsonResponse
      *  */
     #[Route('/tags', name: 'by_tags', methods: ['POST'])]
     public function getByTags(Request $request,ProductRepository $productRepository): JsonResponse
@@ -91,6 +95,7 @@ class ProductController extends AbstractController
      * 
      * @param $request, a Request entity to call the database
      * @param $entityManager, the manager to persist the data
+     * @return JsonResponse
      *  */
 
     #[Route('', name: 'create', methods: ['POST'])]
@@ -181,10 +186,10 @@ class ProductController extends AbstractController
     /** 
      * Getting a product by its ID
      * 
-     * @param $id, the product id to update
+     * @param $product, the product id to update
      * @param $request, a Request entity to call the database
      * @param $entityManager, the manager to persist the data
-     * @param $productRepository, the repository to make request from the table Products
+     * @return JsonResponse
      *  */
 
     #[Route('/{id<\d+>}', name: 'update', methods: ['PATCH'])]
@@ -238,11 +243,11 @@ class ProductController extends AbstractController
     /** 
      * Getting a comment by the id of the associated product
      * 
-     * @param $ProductRepository, the repository to make request from the table Products
-     * @param $id, the id of the associated product
+     * @param $product, the id of the associated product
+     * @return JsonResponse
      *  */
     #[Route('/{id<\d+>}/comments', name: 'get_by_product', methods: ['GET'])]
-    public function getCommentsByProduct(Product $product): Response
+    public function getCommentsByProduct(Product $product): JsonResponse
     {
         // Getting all its comments
         $comments = $product->getComments();
@@ -254,8 +259,10 @@ class ProductController extends AbstractController
     /** 
      * Creating a new comment
      * 
+     * @param $product, id of the Product object
      * @param $request, a Request entity to call the database
      * @param $entityManager, the manager to persist the data
+     * @return JsonResponse
      *  */
     #[Route('/{id<\d+>}/comments', name: 'create_comment', methods: ['POST'])]
     public function createComment(Product $product, Request $request, EntityManagerInterface $entityManager): JsonResponse

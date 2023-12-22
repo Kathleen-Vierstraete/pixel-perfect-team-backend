@@ -19,7 +19,14 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api/picks', name: 'panier')]
 class PickController extends AbstractController
 {
-    #[Route('/{id<\d+>}', name: 'GetPick', methods: ['GET'])]
+    /**
+     * Getting one pick by it's id
+     * 
+     * @param $id, the id of the Pick object
+     * @param $pickRepository, the repository to make request from the table "pick" in DB
+     * @return JsonResponse
+     */
+    #[Route('/{id<\d+><}', name: 'GetPick', methods: ['GET'])]
     public function getById(PickRepository $pickRepository, int $id): JsonResponse
     {
 

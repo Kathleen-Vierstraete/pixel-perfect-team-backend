@@ -23,6 +23,12 @@ use Symfony\Component\Uid\Factory\UuidFactory;
 #[Route('/api/persons', name: '_person')]
 class PersonController extends AbstractController
 {
+    /**
+     * Getting all the users
+     * 
+     * @param $personRepository, the repository to make request from the table "person" in DB
+     * @return JsonResponse
+     */
     #[Route('', name: 'Get_All_Person', methods: ['GET'])]
     public function getAllPerson(PersonRepository $personRepository): JsonResponse
     {
@@ -30,6 +36,13 @@ class PersonController extends AbstractController
 
         return $this->json($person, 200, [], ['groups' => 'person:crud']);
     }
+
+    /**
+     * Getting one person by their id
+     * 
+     * @param $person, the id of the Person object
+     * @return JsonResponse
+     */
     #[Route('/{id<\d+>}', name: 'person_by_id', methods: ['GET'])]
     public function getById(Person $person = null): JsonResponse
     {
@@ -44,6 +57,15 @@ class PersonController extends AbstractController
         return $this->json($person, 200, [], ['groups' => 'person:crud']);
     }
 
+    /**
+     * Change one person's data in the database
+     * 
+     * @param $person, the id of the Person object
+     * @param $request, the request to the DB
+     * @param $entityManager, the EntityManagerInterface to make the relation with the DB
+     * @param $serializer, SerializerInterface used to deserialize the request
+     * @return JsonResponse
+     */
     #[Route('/{id<\d+>}', name: 'patch_person', methods: ['patch'])]
     public function updatePerson(Person $person, Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer): JsonResponse
     {
@@ -62,6 +84,20 @@ class PersonController extends AbstractController
         return $this->json($person, 200, [], ['groups' => 'person:crud']);
     }
 
+    /**
+     * Create a new Pick to a person in the database
+     * 
+     * @param $id, the id of the Person object
+     * @param $request, the request to the DB
+     * @param $entityManager, the EntityManagerInterface to make the relation with the DB
+     * @param $pickRepository, the repository to make request from the table "pick" in DB
+     * @param $purchaseRepository, the repository to make request from the table "purchase" in DB
+     * @param $productRepository, the repository to make request from the table "product" in DB
+     * @param $personRepository, the repository to make request from the table "person" in DB
+     * @param $statusRepository, the repository to make request from the table "status" in DB
+     * @param $uuidFactory, UUID Factory called to generate a new UUID
+     * @return JsonResponse
+     */
     #[Route('/{id<\d+>}/picks', name: '_add_picks', methods: 'POST')]
     public function addPick(int $id, Request $request, EntityManagerInterface $entityManager, PickRepository $pickRepository, PurchaseRepository $purchaseRepository, ProductRepository $productRepository, PersonRepository $personRepository, StatusRepository $statusRepository, UuidFactory $uuidFactory): JsonResponse
     {
@@ -102,6 +138,14 @@ class PersonController extends AbstractController
         return $this->json($picks, context: ['groups' => "pick:crud"]);
     }
 
+    /**
+     * Getting all the Picks associated to one id to delete them
+     * 
+     * @param $id, the id of the Person object
+     * @param $entityManager, the EntityManagerInterface to make the relation with the DB
+     * @param $pickRepository, the repository to make request from the table "pick" in DB
+     * @return JsonResponse
+     */
     #[Route('/{id<\d+>}/picks', name: '_delete_picks', methods: ['DELETE'])]
     public function deletePick(int $id, EntityManagerInterface $entityManager, PickRepository $pickRepository,): JsonResponse
     {
@@ -116,12 +160,26 @@ class PersonController extends AbstractController
         return $this->json("{}", 200);
     }
 
+    /**
+     * Getting all the purchases of one person by their id
+     * 
+     * @param $person, the id of the Person object
+     * @return JsonResponse
+     */
     #[Route('/{id<\d+>}/purchases', name: '_get_purchase', methods: ['GET'])]
     public function purchases(Person $person): JsonResponse
     {
         return $this->json($person->getPurchases(), 200, [], ['groups' => 'purchase:crud']);
     }
 
+    /**
+     * Create a new address and link it to a user
+     * 
+     * @param $person, the id of the Person object
+     * @param $request, the request to the DB
+     * @param $entityManager, the EntityManagerInterface to make the relation with the DB
+     * @return JsonResponse
+     */
     #[Route('/{id<\d+>}/addresses', name: '_add_addresse', methods: ['POST'])]
     public function addAddresses(Person $person, Request $request, EntityManagerInterface $entityManager,): JsonResponse
     {
@@ -133,6 +191,12 @@ class PersonController extends AbstractController
         return $this->json($addresse, 200, [], ['groups' => 'purchase:crud']);
     }
 
+    /**
+     * Getting all the addresses related to one user by it's id
+     * 
+     * @param $person, the id of the Person object
+     * @return JsonResponse
+     */
     #[Route('/{id<\d+>}/addresses', name: '_get_addresse', methods: ['GET'])]
     public function getAddresses(Person $person): JsonResponse
     {

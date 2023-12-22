@@ -13,6 +13,12 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api/stripe', name: 'api_stripe_')]
 class StripeController extends AbstractController
 {
+    /**
+     * Creating a payment intent and generate a client secret
+     * 
+     * @param $request, JSON Request of the payment
+     * @return JsonResponse
+     */
     #[Route('/create', name: 'create', methods:['POST'])]
     public function createPaymentIntent(Request $request): JsonResponse
     {
@@ -21,7 +27,8 @@ class StripeController extends AbstractController
 
         // Retrieve necessary data from the request (e.g., items, amount, currency)
         $requestData = json_decode($request->getContent(), true);
-        // TODO : get properties
+        
+        // Unused for now but listed in the doc
         $products = $requestData['products'];
 
         function calculateOrderAmount(array $products ): int {

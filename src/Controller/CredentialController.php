@@ -16,6 +16,15 @@ use Symfony\Component\Uid\Factory\UuidFactory;
 #[Route('/api/users', name: '_user')]
 class CredentialController extends AbstractController
 {
+    /**
+     * Create a new user in the database
+     * 
+     * @param $request, the request to the DB
+     * @param $entityManager, the EntityManagerInterface to make the relation with the DB
+     * @param $passwordHasher, the password hasher object to hash the password
+     * @param $uuidFactory, the UUID factory object to generate a UUID
+     * @return JsonResponse
+     */
     #[Route('', name: '_add', methods: ['POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, UuidFactory $uuidFactory): JsonResponse
     {
@@ -38,6 +47,13 @@ class CredentialController extends AbstractController
         return $this->json(['message' => 'person added'], 201);
     }
 
+    /**
+     * Verify one user's e-mail by their reset token
+     * 
+     * @param $resetToken, the reset token used for the verification
+     * @param $credentialRepository, the repository to make request from the table "credential" in DB
+     * @return JsonResponse
+     */
     #[Route('/verify/{resetToken}', name: '_verify')]
     public function verify(string $resetToken, CredentialRepository $credentialRepository): JsonResponse
     {
@@ -47,6 +63,12 @@ class CredentialController extends AbstractController
 
         return $this->json(['message' => 'user is verified']);
     }
+    /**
+     * Getting one user by their id
+     * 
+     * @param $credential, the id of the Credential object
+     * @return JsonResponse
+     */
     #[Route('/{id<\d+>}', name: '_getbyid',methods: ['GET'])]
     public function getById(Credential $credential): JsonResponse
     {

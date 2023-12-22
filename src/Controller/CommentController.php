@@ -13,7 +13,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api/comments', name: 'api_comment_')]
@@ -22,11 +21,12 @@ class CommentController extends AbstractController
     /** 
      * Getting a comment by the id of the associated product
      * 
-     * @param $ProductRepository, the repository to make request from the table Products
+     * @param $ProductRepository, the repository to make a request from the table "product" in DB
      * @param $id, the id of the associated product
+     * @return JsonResponse
      *  */
     #[Route('/{id<\d+>}', name: 'get_by_product', methods: ['get'])]
-    public function getByProduct(ProductRepository $productRepository, int $id, PersonRepository $personRepository): Response
+    public function getByProduct(ProductRepository $productRepository, int $id): JsonResponse
     {
         // Getting the product 
         $product = $productRepository->find($id);
@@ -34,15 +34,16 @@ class CommentController extends AbstractController
         // Getting all its comments
         $comments = $product->getComments();
 
-        // Returning the entity comment in JSON (200 = HTTP_OK)
+        // Returning the comment Object in a JSON Object (200 = HTTP_OK)
         return $this->json($comments, 200, [], ['groups' => 'comment:crud']);
     }
 
     /** 
      * Creating a new comment
      * 
-     * @param $request, a Request entity to call the database
-     * @param $entityManager, the manager to persist the data
+     * @param $request, the request to the DB
+     * @param $entityManager, the EntityManagerInterface to make the relation with the DB
+     * @return JsonResponse
      *  */
     #[Route('', name: 'create', methods: ['POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager): JsonResponse
@@ -81,7 +82,7 @@ class CommentController extends AbstractController
         $entityManager->persist($comment);
         $entityManager->flush();
 
-        // Returning the new entity comment in JSON (201 = HTTP_CREATED)
+        // Returning the created comment Object in a JSON Object (201 = HTTP_CREATED)
         return $this->json($comment, 201, [], ['groups' => 'comment:crud']);
     }
 
@@ -127,7 +128,7 @@ class CommentController extends AbstractController
         $entityManager->persist($comment);
         $entityManager->flush();
         
-        // Returning the updated entity comment in JSON (200 = HTTP_OK)
+        // Returning the updated comment Object in a JSON Object (200 = HTTP_OK)
         return $this->json($comment, 200, [], ['groups' => 'comment:crud']);
     }
 
@@ -137,6 +138,7 @@ class CommentController extends AbstractController
      * @param $id, the id of the comment entity
      * @param $entityManager, the manager to persist the data
      * @param $CommentRepository, the repository to make request from the table Comment
+     * @return JsonResponse
      *  */
     #[Route('/delete/{id<\d+>}', name: 'delete', methods: ['DELETE'])]
     public function delete(int $id, EntityManagerInterface $entityManager, CommentRepository $commentRepository): JsonResponse
@@ -148,10 +150,18 @@ class CommentController extends AbstractController
         $entityManager->remove($comment);
         $entityManager->flush();
 
-        // Returning a message 'Comment delete' (200 = HTTP_OK)
+        // Returning a message in a JSON Object (200 = HTTP_OK)
         return $this->json(['message' => 'Comment deleted'], 200, [], ['groups' => 'comment:crud']);
     }
 
+    /** 
+     * Upvoting/Downvoting a comment by its id
+     * 
+     * @param $comment, the Comment entity
+     * @param $request, the request to the DB
+     * @param $entityManager, the EntityManagerInterface to make the relation with the DB
+     * @return JsonResponse
+     *  */
     #[Route('/{id<\d+>}/vote', name: 'vote', methods: ['PATCH'])]
     public function vote(Comment $comment, Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
@@ -165,7 +175,7 @@ class CommentController extends AbstractController
         $entityManager->persist($comment);
         $entityManager->flush();
         
-        // Returning the updated entity comment in JSON (200 = HTTP_OK)
+        // Returning the comment with upvote/downvote in a JSON Object (200 = HTTP_OK)
         return $this->json($comment, 200, [], ['groups' => 'comment:crud']);
     }
 }
