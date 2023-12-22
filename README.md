@@ -1,6 +1,6 @@
 # Pixel Perfect Back-End
 
-Pixel Perfect Back-End is an API for an e-commerce site called Pixel Perfect.
+Pixel Perfect Back-End is an API for an e-commerce site called Pixel Perfect...
 
 Requirements:
 - PHP 8.1.0 or higher
