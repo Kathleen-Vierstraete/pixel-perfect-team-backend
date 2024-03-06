@@ -53,4 +53,6 @@ class AddressController extends AbstractController
         // Returning a message in a JSON Object (200 = HTTP_OK)
         return $this->json(['message' => 'Address deleted successfully'], 200);
     }
+
+    // Test 6 mars 2024
 }
